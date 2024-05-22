@@ -35,6 +35,7 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
     usernameController.dispose();
     passwordController.dispose();
+    studentIDController.dispose();
   }
 
   @override
@@ -63,9 +64,9 @@ class _SignUpPageState extends State<SignUpPage> {
             image: DecorationImage(
               image: AssetImage("lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg",),
               fit: BoxFit.fill,)),
-        padding: const EdgeInsets.all(30.0),
+         padding: const EdgeInsets.fromLTRB(30,30,30,30),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset("lib/asset/images/Sbu-logo.svg.png",
                 scale: MediaQuery.of(context).size.width/50
@@ -91,6 +92,7 @@ class _SignUpPageState extends State<SignUpPage> {
               cursorColor:Colors.white,
               cursorOpacityAnimates:true,
               decoration: const InputDecoration(
+
                 labelText: 'StudentID',
                 labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your StudentID',
@@ -108,10 +110,14 @@ class _SignUpPageState extends State<SignUpPage> {
               cursorColor:Colors.white,
               cursorOpacityAnimates:true,
               decoration: InputDecoration(
+                helperText: "Create a password with at least 8 characters",
+                helperStyle: const TextStyle(
+                  color: Colors.black
+                ),
                 labelText: 'Create Password',
-                labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
+                labelStyle: const TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your password',
-                hintStyle: TextStyle(fontSize: 20.0, color: Colors.white70),
+                hintStyle: const TextStyle(fontSize: 20.0, color: Colors.white70),
                 icon: Icon(Icons.key),
                 iconColor: Colors.white,
                 // Here is key idea
@@ -135,7 +141,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            // const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 shape: const StadiumBorder(),

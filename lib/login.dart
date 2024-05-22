@@ -9,7 +9,7 @@ class LoginApp extends StatelessWidget {
   const LoginApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'DaneshjoYar',
       home: LoginPage(),
@@ -35,13 +35,12 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
     usernameController.dispose();
     passwordController.dispose();
-  }
 
+  }
   @override
   void initState() {
     _passwordVisible = false;
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
               image: DecorationImage(
                 image: AssetImage("lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
                 fit: BoxFit.cover,)),
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.fromLTRB(30,60,30,30),
         child: Column(
 
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -85,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
               iconColor: Colors.white,
             ),
           ),
-          const SizedBox(height: 44),
+          // const SizedBox(height: 44),
           TextFormField(
             keyboardType: TextInputType.text,
             controller: passwordController,
@@ -118,7 +117,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          // const SizedBox(height: 40),
           ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const StadiumBorder(),
             backgroundColor:Colors.black12),
@@ -134,6 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                   fontWeight: FontWeight.bold,
                 )),
           ),
+
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               shape: const StadiumBorder(),
