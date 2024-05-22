@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 void main() {
-  runApp(LoginApp());
+  runApp(const LoginApp());
 }
 
 class LoginApp extends StatelessWidget {
+  const LoginApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,6 +18,7 @@ class LoginApp extends StatelessWidget {
 }
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -61,14 +63,14 @@ class _LoginPageState extends State<LoginPage> {
               image: DecorationImage(
                 image: AssetImage("lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
                 fit: BoxFit.cover,)),
-          padding: const EdgeInsets.all(30.0),
+          padding: const EdgeInsets.all(25.0),
         child: Column(
 
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
         children: [
            Image.asset("lib/asset/images/Sbu-logo.svg.png",
-            scale: MediaQuery.of(context).size.width/40
+            scale: MediaQuery.of(context).size.width/55
       ),
           TextField(
             controller: usernameController,
@@ -116,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          const SizedBox(height: 40),
+          // const SizedBox(height: 40),
           ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const StadiumBorder(),
             backgroundColor:Colors.black12),
