@@ -12,20 +12,15 @@ class LoginApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return const MaterialApp(
-      debugShowCheckedModeBanner:false,
+      debugShowCheckedModeBanner: false,
       home: DefaultTabController(
         length: 2,
         child: Scaffold(
           bottomNavigationBar: TabBar(
             labelColor: Colors.cyan,
             indicatorColor: Colors.cyanAccent,
-
-            tabs: [
-              Tab(icon: Icon(Icons.login)),
-              Tab(icon: Icon(Icons.add))
-            ],
+            tabs: [Tab(icon: Icon(Icons.login)), Tab(icon: Icon(Icons.add))],
           ),
           body: TabBarView(
             children: [
@@ -46,7 +41,6 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-
 class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
 
@@ -65,33 +59,32 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(
-                  "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
-              fit: BoxFit.cover,
-              filterQuality: FilterQuality.high,
-            )),
+          image: AssetImage(
+              "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
+          fit: BoxFit.cover,
+          filterQuality: FilterQuality.high,
+        )),
         padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Image.asset(
               "lib/asset/images/Sbu-logo.svg.png",
-              scale: MediaQuery
-                  .of(context)
-                  .size
-                  .width / 60,
+              scale: MediaQuery.of(context).size.width / 60,
               filterQuality: FilterQuality.high,
             ),
 
             TextField(
               controller: usernameController,
               cursorColor: Colors.cyan,
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
               decoration: const InputDecoration(
                 labelText: 'Username',
                 labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your username',
                 hintStyle: TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: Icon(Icons.account_circle_sharp),
+                icon: Icon(Icons.account_circle_sharp,
+                size: 35,),
                 iconColor: Colors.white,
               ),
             ),
@@ -100,13 +93,18 @@ class _LoginPageState extends State<LoginPage> {
               keyboardType: TextInputType.text,
               controller: passwordController,
               obscureText: !_passwordVisible,
+              style: TextStyle(fontSize:20 ,color: Colors.white70),
+
               //This will obscure text dynamically
               decoration: InputDecoration(
                 labelText: 'Password',
-                labelStyle: const TextStyle(fontSize: 20.0, color: Colors.white),
+                labelStyle:
+                    const TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your password',
-                hintStyle: const TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: const Icon(Icons.key),
+                hintStyle:
+                    const TextStyle(fontSize: 20.0, color: Colors.white70),
+                icon: const Icon(Icons.key,
+                size: 35,),
                 iconColor: Colors.white,
                 // Here is key idea
                 suffixIcon: IconButton(
@@ -115,9 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                   icon: Icon(
                     // Based on passwordVisible state choose the icon
                     _passwordVisible ? Icons.visibility_off : Icons.visibility,
-                    color: Theme
-                        .of(context)
-                        .dialogBackgroundColor,
+                    color: Theme.of(context).dialogBackgroundColor,
                   ),
                   onPressed: () {
                     // Update the state i.e. toogle the state of passwordVisible variable
@@ -147,8 +143,7 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
-    )
-    ;
+    );
   }
 
   @override
@@ -159,6 +154,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 }
+
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -178,7 +174,6 @@ class _SignUpPageState extends State<SignUpPage> {
   void initState() {
     super.initState();
     _passwordVisible = false;
-
   }
 
   @override
@@ -188,19 +183,19 @@ class _SignUpPageState extends State<SignUpPage> {
       body: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(
-                "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg",
-              ),
-              fit: BoxFit.cover,
-            )),
+          image: AssetImage(
+            "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg",
+          ),
+          fit: BoxFit.cover,
+        )),
         padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-
             Image.asset("lib/asset/images/Sbu-logo.svg.png",
                 scale: MediaQuery.of(context).size.width / 60),
             TextFormField(
+              style: TextStyle(fontSize:20 ,color: Colors.white70),
               keyboardType: TextInputType.text,
               controller: usernameController,
               cursorColor: Colors.white,
@@ -210,11 +205,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your username',
                 hintStyle: TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: Icon(Icons.account_circle_sharp),
+                icon: Icon(Icons.account_circle_sharp,
+                size: 35,),
                 iconColor: Colors.white,
               ),
             ),
             TextFormField(
+              style: TextStyle(fontSize:20 ,color: Colors.white70),
+
               keyboardType: TextInputType.text,
               controller: studentIDController,
               cursorColor: Colors.white,
@@ -224,26 +222,27 @@ class _SignUpPageState extends State<SignUpPage> {
                 labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your StudentID',
                 hintStyle: TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: Icon(Icons.account_circle_sharp),
+                icon: Icon(Icons.account_circle_outlined,
+                size: 35,),
                 iconColor: Colors.white,
               ),
             ),
             TextFormField(
+              style: TextStyle(fontSize:20 ,color: Colors.white70),
+
               keyboardType: TextInputType.text,
               controller: passwordController,
               obscureText: !_passwordVisible,
               cursorColor: Colors.white,
               cursorOpacityAnimates: true,
               decoration: InputDecoration(
-                helperText: "Create a password with at least 8 characters",
-                helperStyle: const TextStyle(color: Colors.black),
                 labelText: 'Create Password',
                 labelStyle:
-                const TextStyle(fontSize: 20.0, color: Colors.white),
+                    const TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your password',
                 hintStyle:
-                const TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: Icon(Icons.key),
+                    const TextStyle(fontSize: 20.0, color: Colors.white70),
+                icon: Icon(Icons.key,size: 35,),
                 iconColor: Colors.white,
                 // Here is key idea
                 suffixIcon: IconButton(
@@ -261,7 +260,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                 ),
               ),
-
             ),
 
             // const SizedBox(height: 20),
@@ -296,13 +294,14 @@ class _SignUpPageState extends State<SignUpPage> {
     studentIDController.dispose();
     super.dispose();
   }
+
   // Function to validate the password
   bool _validatePassword(String password) {
     // Reset error message
     _errorMessage = '';
 
     // Password length greater than 6
-    if (password.length <8) {
+    if (password.length < 8) {
       _errorMessage += 'Password must be longer than 8 characters.\n';
     }
     // Contains at least one uppercase letter
@@ -324,42 +323,41 @@ class _SignUpPageState extends State<SignUpPage> {
     if (!password.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
       _errorMessage += '• Special character is missing.\n';
     }
-      error();
+    error();
     // If there are no error messages, the password is valid
     return _errorMessage.isEmpty;
   }
 
-void error(){
-toastification.show(
-  context: context,
-  type: ToastificationType.error,
-  style: ToastificationStyle.flat,
-  autoCloseDuration: const Duration(seconds: 5),
-  title: const Text("Invalid Password"),
-  description: Text(_errorMessage),
-  alignment: Alignment.topCenter,
-  animationDuration: const Duration(milliseconds: 300),
-  animationBuilder: (context, animation, alignment, child) {
-  return FadeTransition(
-  opacity: animation,
-  child: child,
-  );
-  },
-  icon: const Icon(Icons.error),
-  primaryColor: Colors.red,
-  backgroundColor: Colors.white,
-  foregroundColor: Colors.black,
-  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-  borderRadius: BorderRadius.circular(15),
-  showProgressBar: true,
-  closeButtonShowType: CloseButtonShowType.always,
-  closeOnClick: true,
-  pauseOnHover: true,
-  dragToClose: true,
-  applyBlurEffect: true,
-  );
-  ToastificationStyle;
+  void error() {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flat,
+      autoCloseDuration: const Duration(seconds: 5),
+      title: const Text("Invalid Password"),
+      description: Text(_errorMessage),
+      alignment: Alignment.topCenter,
+      animationDuration: const Duration(milliseconds: 300),
+      animationBuilder: (context, animation, alignment, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      icon: const Icon(Icons.error),
+      primaryColor: Colors.red,
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      borderRadius: BorderRadius.circular(15),
+      showProgressBar: true,
+      closeButtonShowType: CloseButtonShowType.always,
+      closeOnClick: true,
+      pauseOnHover: true,
+      dragToClose: true,
+      applyBlurEffect: true,
+    );
+    ToastificationStyle;
+  }
 }
-}
-
