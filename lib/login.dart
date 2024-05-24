@@ -1,3 +1,4 @@
+import 'package:danshjoyar/register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -55,6 +56,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -64,7 +67,8 @@ class _LoginPageState extends State<LoginPage> {
           fit: BoxFit.cover,
           filterQuality: FilterQuality.high,
         )),
-        padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+        padding:  EdgeInsets.fromLTRB(height/25, height/25, height/25, 0),
+
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -131,6 +135,9 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 String username = usernameController.text;
                 String password = passwordController.text;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  profileScreen(username: username,password: password,)));
               },
               child: const Text('Login',
                   style: TextStyle(
@@ -178,6 +185,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -188,12 +197,12 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           fit: BoxFit.cover,
         )),
-        padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+        padding:  EdgeInsets.fromLTRB(height/25, height/25, height/25, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset("lib/asset/images/Sbu-logo.svg.png",
-                scale: MediaQuery.of(context).size.width / 60),
+                scale: width / 60),
             TextFormField(
               style: TextStyle(fontSize:20 ,color: Colors.white70),
               keyboardType: TextInputType.text,
@@ -261,8 +270,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
             ),
-
-            // const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 shape: const StadiumBorder(),
