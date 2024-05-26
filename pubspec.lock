@@ -240,6 +240,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.1"
+  thebrioflashynavbar:
+    dependency: "direct main"
+    description:
+      name: thebrioflashynavbar
+      sha256: "574ba88fddcfb055237e1264f983ee6a61b12f5b7283a28034a00b87e5bba4a9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   toastification:
     dependency: "direct main"
     description:

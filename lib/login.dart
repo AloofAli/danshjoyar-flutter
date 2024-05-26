@@ -1,3 +1,4 @@
+import 'package:danshjoyar/changer.dart';
 import 'package:danshjoyar/register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -137,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                 String password = passwordController.text;
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) =>  profileScreen(username: username,password: password,)));
+                    MaterialPageRoute(builder: (context) =>  profileScreen(username: username, password: password)));
               },
               child: const Text('Login',
                   style: TextStyle(
@@ -278,6 +279,7 @@ class _SignUpPageState extends State<SignUpPage> {
               onPressed: () {
                 setState(() {
                   _isValid = _validatePassword(passwordController.text);
+
                 });
               },
               child: const Text('Register',

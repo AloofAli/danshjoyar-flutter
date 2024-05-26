@@ -3,6 +3,7 @@
 import 'dart:ffi';
 import 'dart:ui';
 
+import 'package:danshjoyar/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -40,13 +41,8 @@ class _profileScreenState extends State<profileScreen> {
 
     return Stack(
       children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.lightBlue.shade200,
-          ),
-        ),
         Scaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.lightBlue.shade200,
           body: Container(
             child: Stack(
               alignment: Alignment.center,
@@ -82,10 +78,7 @@ class _profileScreenState extends State<profileScreen> {
                       top: height / 3, left: width / 20, right: width / 20),
                   child: Column(
                     children: <Widget>[
-
-
-                      SizedBox(
-                      ),
+                      SizedBox(),
                       Column(
                         children: [
                           Container(
@@ -97,7 +90,6 @@ class _profileScreenState extends State<profileScreen> {
                               defaultVerticalAlignment:
                                   TableCellVerticalAlignment.middle,
                               children: [
-
                                 _buildTableRow("StudentID", "0441281850"),
                                 _buildTableRow("Total Avrage", "18.5"),
                                 _buildTableRow("Current Term", "2"),
@@ -128,7 +120,7 @@ class _profileScreenState extends State<profileScreen> {
                                           ),
                                         ),
                                       ),
-                                       TableCell(
+                                      TableCell(
                                         child: Padding(
                                           padding: EdgeInsets.all(12.0),
                                           child: IconButton(
@@ -136,9 +128,8 @@ class _profileScreenState extends State<profileScreen> {
                                             tooltip: "Edit account",
                                             icon: Icon(
                                               // Based on passwordVisible state choose the icon
-                                             Icons.edit,
+                                              Icons.edit,
                                               color: CupertinoColors.systemTeal,
-
                                             ),
                                             onPressed: () {
                                               setState(() {});
@@ -152,13 +143,37 @@ class _profileScreenState extends State<profileScreen> {
                           )
                         ],
                       ),
-                      SizedBox(height: height/20,),
-                      ElevatedButton(
+                      SizedBox(
+                        height: height / 20,
+                      ),
+                      TextButton(
                         style: ElevatedButton.styleFrom(
                           shape: const StadiumBorder(),
                           backgroundColor: Colors.black12,
                         ),
-                        onPressed: () {},
+                        onPressed: () => showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Are you sure?'),
+                            content: const Text(
+                                '"Warning: This button permanently deletes your account and all associated data. Proceed with caution, as this action cannot be undone."'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Cancel'),
+                                child: const Text('No'
+                                    ''),
+                              ),
+                              TextButton(
+                                child: const Text('Yes'),
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SignUpPage())),
+                              ),
+                            ],
+                          ),
+                        ),
                         child: const Text('delete account',
                             style: TextStyle(
                               letterSpacing: 3.5,
