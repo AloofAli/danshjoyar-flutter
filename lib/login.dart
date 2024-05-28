@@ -1,5 +1,6 @@
 import 'package:danshjoyar/changer.dart';
-import 'package:danshjoyar/register.dart';
+import 'package:danshjoyar/profilescreen.dart';
+import 'package:danshjoyar/EditAccount.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -173,7 +174,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   bool _passwordVisible = false;
   bool _isValid = false;
-  String _errorMessage = '';
+  String _errorMessage = '' ;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController studentIDController = TextEditingController();
@@ -281,6 +282,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   _isValid = _validatePassword(passwordController.text);
 
                 });
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => changer(username:usernameController.text, password: passwordController.text)));
               },
               child: const Text('Register',
                   style: TextStyle(

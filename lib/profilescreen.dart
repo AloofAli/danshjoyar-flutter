@@ -1,13 +1,11 @@
-// ignore_for_file: prefer_const_constructors
 
-import 'dart:ffi';
+import 'dart:io';
 import 'dart:ui';
-
 import 'package:danshjoyar/login.dart';
+import 'package:danshjoyar/EditAccount.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 class profileScreen extends StatefulWidget {
@@ -38,12 +36,19 @@ class _profileScreenState extends State<profileScreen> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
+    File? _image;
+
 
     return Stack(
       children: <Widget>[
         Scaffold(
-          backgroundColor: Colors.lightBlue.shade200,
           body: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage(
+                        "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.linearToSrgbGamma())),
             child: Stack(
               alignment: Alignment.center,
               children: <Widget>[
@@ -52,9 +57,30 @@ class _profileScreenState extends State<profileScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      CircleAvatar(
-                        backgroundImage: const AssetImage(''),
-                        radius: height / 10,
+                      Stack(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: _image != null
+                                ? FileImage(_image!)
+                                : AssetImage('assets/profile_picture.png')
+                                    as ImageProvider,
+                            radius: height / 10,
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              child: CircleAvatar(
+                                backgroundColor: Colors.black54,
+                                radius: 20,
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: height / 30,
@@ -70,8 +96,7 @@ class _profileScreenState extends State<profileScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: height / 2.5),
-                  child: Container(color: Colors.white70),
+                  padding: EdgeInsets.only(top: height / 3),
                 ),
                 Padding(
                   padding: EdgeInsets.only(
@@ -133,6 +158,15 @@ class _profileScreenState extends State<profileScreen> {
                                             ),
                                             onPressed: () {
                                               setState(() {});
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          EditAccount(
+                                                              username:
+                                                                  username,
+                                                              password:
+                                                                  password)));
                                             },
                                           ),
                                         ),
@@ -149,7 +183,7 @@ class _profileScreenState extends State<profileScreen> {
                       TextButton(
                         style: ElevatedButton.styleFrom(
                           shape: const StadiumBorder(),
-                          backgroundColor: Colors.black12,
+                          backgroundColor: Colors.black45,
                         ),
                         onPressed: () => showDialog<String>(
                           context: context,
