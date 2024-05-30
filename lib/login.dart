@@ -100,8 +100,6 @@ class _LoginPageState extends State<LoginPage> {
               controller: passwordController,
               obscureText: !_passwordVisible,
               style: TextStyle(fontSize:20 ,color: Colors.white70),
-
-              //This will obscure text dynamically
               decoration: InputDecoration(
                 labelText: 'Password',
                 labelStyle:
@@ -112,17 +110,15 @@ class _LoginPageState extends State<LoginPage> {
                 icon: const Icon(Icons.key,
                 size: 35,),
                 iconColor: Colors.white,
-                // Here is key idea
+
                 suffixIcon: IconButton(
                   splashColor: Colors.white,
                   tooltip: "Change visibility",
                   icon: Icon(
-                    // Based on passwordVisible state choose the icon
                     _passwordVisible ? Icons.visibility_off : Icons.visibility,
                     color: Theme.of(context).dialogBackgroundColor,
                   ),
                   onPressed: () {
-                    // Update the state i.e. toogle the state of passwordVisible variable
                     setState(() {
                       _passwordVisible = !_passwordVisible;
                     });
@@ -255,12 +251,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     const TextStyle(fontSize: 20.0, color: Colors.white70),
                 icon: Icon(Icons.key,size: 35,),
                 iconColor: Colors.white,
-                // Here is key idea
                 suffixIcon: IconButton(
                   splashColor: Colors.white,
                   tooltip: "Change visibility",
                   icon: Icon(
-                    // Based on passwordVisible state choose the icon
                     _passwordVisible ? Icons.visibility_off : Icons.visibility,
                     color: Theme.of(context).dialogBackgroundColor,
                   ),

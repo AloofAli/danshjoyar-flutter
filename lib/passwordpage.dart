@@ -3,17 +3,13 @@ import 'package:toastification/toastification.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({Key? key}) : super(key: key);
-
   @override
   _ChangePasswordPageState createState() => _ChangePasswordPageState();
 }
-
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   TextEditingController _currentPasswordController = TextEditingController();
   TextEditingController _newPasswordController = TextEditingController();
   TextEditingController _confirmNewPasswordController = TextEditingController();
-
-    bool _passwordVisible = false;
     bool _isValid = false;
     String errorMessage = '';
   @override
@@ -21,80 +17,91 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Change Password'),
-        centerTitle: true,
       ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
             fit: BoxFit.cover,
-            colorFilter: ColorFilter.linearToSrgbGamma(),
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(
-                controller: _currentPasswordController,
-                decoration: InputDecoration(
-                  labelText: 'Current Password',
-                  labelStyle: TextStyle(
-                      fontSize: 20
-                  ),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _newPasswordController,
-                decoration: InputDecoration(
-                  labelText: 'New Password',
-                  labelStyle: TextStyle(
-                    fontSize: 20
-                  ),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _confirmNewPasswordController,
-                decoration: InputDecoration(
-                  labelText: 'Confirm New Password',
-                  labelStyle: TextStyle(
-                      fontSize: 20
-                  ),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _isValid = validatePassword(_newPasswordController.text);
+        padding: const EdgeInsets.all(30.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextFormField(
+              controller: _currentPasswordController,
+              decoration: InputDecoration(
+                labelText: 'Current Password',
+                labelStyle: TextStyle(fontSize: 18, color: Colors.white),
 
-                  });
-                  if (_newPasswordController.text == _confirmNewPasswordController.text) {
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Password changed successfully!'),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('New password and confirm password do not match!'),
-                      ),
-                    );
-                  }
-                },
-                child: Text('Change Password',style: TextStyle(fontSize: 20),),
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: _newPasswordController,
+              decoration: InputDecoration(
+                labelText: 'New Password',
+                labelStyle: TextStyle(fontSize: 18, color: Colors.white),
+
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: _confirmNewPasswordController,
+              decoration: InputDecoration(
+                labelText: 'Confirm New Password',
+                labelStyle: TextStyle(fontSize: 18, color: Colors.white),
+
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+              ),
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _isValid = validatePassword(_newPasswordController.text);
+
+                });
+                if (_newPasswordController.text == _confirmNewPasswordController.text) {
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Password changed successfully!'),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('New password and confirm password do not match!'),
+                    ),
+                  );
+                }
+              },
+              child: Text('Change Password',style: TextStyle(fontSize: 20),),
+            ),
+          ],
         ),
+                  ),
       ),
     );
 
