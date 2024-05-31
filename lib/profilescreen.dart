@@ -2,9 +2,11 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:danshjoyar/login.dart';
 import 'package:danshjoyar/EditAccount.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 class profileScreen extends StatefulWidget {
@@ -67,10 +69,7 @@ class _profileScreenState extends State<profileScreen> {
                           Stack(
                             children: [
                               CircleAvatar(
-                                backgroundImage: _image != null
-                                    ? FileImage(_image!)
-                                    : AssetImage('assets/profile_picture.png')
-                                        as ImageProvider,
+                                backgroundImage: _image != null ? FileImage(_image!) : null,
                                 radius: height / 10,
                               ),
                               Positioned(
@@ -80,9 +79,19 @@ class _profileScreenState extends State<profileScreen> {
                                   child: CircleAvatar(
                                     backgroundColor: Colors.black54,
                                     radius: 20,
-                                    child: Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.white,
+                                    child: IconButton(
+                                      icon:Icon(Icons.camera_alt),
+                                      color: Colors.white, onPressed: () async {
+                                      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+                                      if (result != null) {
+                                        File file = File(result.files.single.path!);
+                                        setState(() {
+                                          _image=file;
+                                        });
+                                      } else {
+                                        // User canceled the picker
+                                      }
+                                    },
                                     ),
                                   ),
                                 ),
