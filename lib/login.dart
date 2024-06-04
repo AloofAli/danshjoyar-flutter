@@ -276,9 +276,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   _isValid = _validatePassword(passwordController.text);
 
                 });
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => changer(username:usernameController.text, password: passwordController.text)));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => changer(username:usernameController.text, password: passwordController.text)));
               },
               child: const Text('Register',
                   style: TextStyle(

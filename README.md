@@ -34,7 +34,6 @@ The mobile application, named Danshjoyar, consists of seven main pages:
 6. News Page(خبرا): Shows the latest news and announcements from the university.
 7. Assignments Page(تمرینا): Lists assignments and projects assigned to the user.
 
-## Additional Information
-- The main Java functions are located in `https://github.com/AloofAli/daneshjoyar`.
+
 
 ---
