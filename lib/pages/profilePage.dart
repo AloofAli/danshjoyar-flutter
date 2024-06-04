@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:danshjoyar/login.dart';
-import 'package:danshjoyar/EditAccount.dart';
+import 'package:danshjoyar/pages/EditAccount.dart';
+import 'package:danshjoyar/pages/Signup%20page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +42,7 @@ class _profileScreenState extends State<profileScreen> {
     return Stack(
       children: <Widget>[
         Scaffold(
-          appBar:AppBar(
+          appBar: AppBar(
             title: Text(
               "Profile",
               style: TextStyle(color: Colors.black),
@@ -69,7 +69,8 @@ class _profileScreenState extends State<profileScreen> {
                           Stack(
                             children: [
                               CircleAvatar(
-                                backgroundImage: _image != null ? FileImage(_image!) : null,
+                                backgroundImage:
+                                    _image != null ? FileImage(_image!) : null,
                                 radius: height / 10,
                               ),
                               Positioned(
@@ -80,18 +81,22 @@ class _profileScreenState extends State<profileScreen> {
                                     backgroundColor: Colors.black54,
                                     radius: 20,
                                     child: IconButton(
-                                      icon:Icon(Icons.camera_alt),
-                                      color: Colors.white, onPressed: () async {
-                                      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
-                                      if (result != null) {
-                                        File file = File(result.files.single.path!);
-                                        setState(() {
-                                          _image=file;
-                                        });
-                                      } else {
-                                        // User canceled the picker
-                                      }
-                                    },
+                                      icon: Icon(Icons.camera_alt),
+                                      color: Colors.white,
+                                      onPressed: () async {
+                                        FilePickerResult? result =
+                                            await FilePicker.platform.pickFiles(
+                                                type: FileType.image);
+                                        if (result != null) {
+                                          File file =
+                                              File(result.files.single.path!);
+                                          setState(() {
+                                            _image = file;
+                                          });
+                                        } else {
+                                          // User canceled the picker
+                                        }
+                                      },
                                     ),
                                   ),
                                 ),
@@ -152,7 +157,8 @@ class _profileScreenState extends State<profileScreen> {
                                         children: [
                                           TableCell(
                                             child: Padding(
-                                              padding: const EdgeInsets.all(12.0),
+                                              padding:
+                                                  const EdgeInsets.all(12.0),
                                               child: Text(
                                                 "Edit acoount",
                                                 style: const TextStyle(
@@ -170,7 +176,8 @@ class _profileScreenState extends State<profileScreen> {
                                                 icon: Icon(
                                                   // Based on passwordVisible state choose the icon
                                                   Icons.edit,
-                                                  color: CupertinoColors.systemTeal,
+                                                  color: CupertinoColors
+                                                      .systemTeal,
                                                 ),
                                                 onPressed: () {
                                                   setState(() {});
@@ -219,7 +226,8 @@ class _profileScreenState extends State<profileScreen> {
                                     onPressed: () => Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => SignUpPage())),
+                                            builder: (context) =>
+                                                const SignUpPage())),
                                   ),
                                 ],
                               ),
