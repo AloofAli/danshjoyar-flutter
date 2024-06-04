@@ -42,10 +42,14 @@ class _profileScreenState extends State<profileScreen> {
     return Stack(
       children: <Widget>[
         Scaffold(
+          extendBodyBehindAppBar: true,
+
           appBar: AppBar(
+backgroundColor:Colors.transparent,
             title: Text(
               "Profile",
-              style: TextStyle(color: Colors.black),
+
+              style: TextStyle(color: Colors.black,),
             ),
           ),
           body: SingleChildScrollView(
@@ -57,12 +61,12 @@ class _profileScreenState extends State<profileScreen> {
                         image: AssetImage(
                             "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
                         fit: BoxFit.cover,
-                        colorFilter: ColorFilter.linearToSrgbGamma())),
+                    )),
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.only(top: height / 20),
+                      padding: EdgeInsets.only(top: height / 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[

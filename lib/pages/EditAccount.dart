@@ -31,7 +31,10 @@ class _EditAccountState extends State<EditAccount> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
+      extendBodyBehindAppBar: true,
+
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: const Text('Edit Account'),
       ),
       body: Container(

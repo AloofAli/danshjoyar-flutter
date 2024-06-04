@@ -11,5 +11,6 @@ class tamrina extends StatefulWidget {
 class _tamrinaState extends State<tamrina> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold());}}
+    return Placeholder();
+  }
+}
