@@ -1,164 +1,7 @@
-import 'package:danshjoyar/changer.dart';
-import 'package:danshjoyar/profilescreen.dart';
-import 'package:danshjoyar/EditAccount.dart';
+import 'package:danshjoyar/mainPageHandler.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:toastification/toastification.dart';
-
-void main() {
-  runApp(const LoginApp());
-}
-
-class LoginApp extends StatelessWidget {
-  const LoginApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          bottomNavigationBar: TabBar(
-            labelColor: Colors.cyan,
-            indicatorColor: Colors.cyanAccent,
-            tabs: [Tab(icon: Icon(Icons.login)), Tab(icon: Icon(Icons.add))],
-          ),
-          body: TabBarView(
-            children: [
-              LoginPage(),
-              SignUpPage(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  bool _passwordVisible = false;
-
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _passwordVisible = false;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-          image: AssetImage(
-              "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
-          fit: BoxFit.cover,
-          filterQuality: FilterQuality.high,
-        )),
-        padding:  EdgeInsets.fromLTRB(height/25, height/25, height/25, 0),
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Image.asset(
-              "lib/asset/images/Sbu-logo.svg.png",
-              scale: MediaQuery.of(context).size.width / 60,
-              filterQuality: FilterQuality.high,
-            ),
-
-            TextField(
-              controller: usernameController,
-              cursorColor: Colors.cyan,
-                style: TextStyle(fontSize:20 ,color: Colors.white70),
-              decoration: const InputDecoration(
-                labelText: 'Username',
-                labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
-                hintText: 'Enter your username',
-                hintStyle: TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: Icon(Icons.account_circle_sharp,
-                size: 35,),
-                iconColor: Colors.white,
-              ),
-            ),
-            // const SizedBox(height: 44),
-            TextFormField(
-              keyboardType: TextInputType.text,
-              controller: passwordController,
-              obscureText: !_passwordVisible,
-              style: TextStyle(fontSize:20 ,color: Colors.white70),
-              decoration: InputDecoration(
-                labelText: 'Password',
-                labelStyle:
-                    const TextStyle(fontSize: 20.0, color: Colors.white),
-                hintText: 'Enter your password',
-                hintStyle:
-                    const TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: const Icon(Icons.key,
-                size: 35,),
-                iconColor: Colors.white,
-
-                suffixIcon: IconButton(
-                  splashColor: Colors.white,
-                  tooltip: "Change visibility",
-                  icon: Icon(
-                    _passwordVisible ? Icons.visibility_off : Icons.visibility,
-                    color: Theme.of(context).dialogBackgroundColor,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _passwordVisible = !_passwordVisible;
-                    });
-                  },
-                ),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  shape: const StadiumBorder(),
-                  backgroundColor: Colors.black12),
-              onPressed: () {
-                String username = usernameController.text;
-                String password = passwordController.text;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>  profileScreen(username: username, password: password)));
-              },
-              child: const Text('Login',
-                  style: TextStyle(
-                    letterSpacing: 3.5,
-                    color: Colors.cyan,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  )),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    usernameController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
-}
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -170,7 +13,8 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   bool _passwordVisible = false;
   bool _isValid = false;
-  String _errorMessage = '' ;
+  String _errorMessage = '';
+
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController studentIDController = TextEditingController();
@@ -195,14 +39,13 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           fit: BoxFit.cover,
         )),
-        padding:  EdgeInsets.fromLTRB(height/25, height/25, height/25, 0),
+        padding: EdgeInsets.fromLTRB(height / 25, height / 25, height / 25, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Image.asset("lib/asset/images/Sbu-logo.svg.png",
-                scale: width / 60),
+            Image.asset("lib/asset/images/Sbu-logo.svg.png", scale: width / 60),
             TextFormField(
-              style: TextStyle(fontSize:20 ,color: Colors.white70),
+              style: TextStyle(fontSize: 20, color: Colors.white70),
               keyboardType: TextInputType.text,
               controller: usernameController,
               cursorColor: Colors.white,
@@ -212,14 +55,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your username',
                 hintStyle: TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: Icon(Icons.account_circle_sharp,
-                size: 35,),
+                icon: Icon(
+                  Icons.account_circle_sharp,
+                  size: 35,
+                ),
                 iconColor: Colors.white,
               ),
             ),
             TextFormField(
-              style: TextStyle(fontSize:20 ,color: Colors.white70),
-
+              style: TextStyle(fontSize: 20, color: Colors.white70),
               keyboardType: TextInputType.text,
               controller: studentIDController,
               cursorColor: Colors.white,
@@ -229,14 +73,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your StudentID',
                 hintStyle: TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: Icon(Icons.account_circle_outlined,
-                size: 35,),
+                icon: Icon(
+                  Icons.account_circle_outlined,
+                  size: 35,
+                ),
                 iconColor: Colors.white,
               ),
             ),
             TextFormField(
-              style: TextStyle(fontSize:20 ,color: Colors.white70),
-
+              style: TextStyle(fontSize: 20, color: Colors.white70),
               keyboardType: TextInputType.text,
               controller: passwordController,
               obscureText: !_passwordVisible,
@@ -249,7 +94,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 hintText: 'Enter your password',
                 hintStyle:
                     const TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: Icon(Icons.key,size: 35,),
+                icon: Icon(
+                  Icons.key,
+                  size: 35,
+                ),
                 iconColor: Colors.white,
                 suffixIcon: IconButton(
                   splashColor: Colors.white,
@@ -274,9 +122,13 @@ class _SignUpPageState extends State<SignUpPage> {
               onPressed: () {
                 setState(() {
                   _isValid = _validatePassword(passwordController.text);
-
                 });
-                Navigator.push(context, MaterialPageRoute(builder: (context) => changer(username:usernameController.text, password: passwordController.text)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => mainPageHandler(
+                            username: usernameController.text,
+                            password: passwordController.text)));
               },
               child: const Text('Register',
                   style: TextStyle(
@@ -300,7 +152,6 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  // Function to validate the password
   bool _validatePassword(String password) {
     // Reset error message
     _errorMessage = '';
