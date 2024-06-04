@@ -57,11 +57,13 @@ class _SaraState extends State<sara> {
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage(
-                      "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg",
+                      "lib/asset/images/casey-horner-4rDCa5hBlCs-unsplash.jpg",
                     ),
+
                     fit: BoxFit.cover,
+
                     colorFilter: ColorFilter.mode(
-                        Colors.black38, BlendMode.darken),
+                        Colors.black26, BlendMode.darken),
                   ),
                 ),
                 padding: EdgeInsets.fromLTRB(
@@ -99,22 +101,23 @@ class _SaraState extends State<sara> {
                       children: [
                         _buildSummaryBox(icon: Icon(Icons.school),
                             text: " Exam:",
-                        width: 110),
+                            width: 110),
                         _buildSummaryBox(icon: Icon(Icons.task),
-                            text: " DeadLine:",width: 100),
+                            text: " DeadLine:", width: 100),
                         _buildSummaryBox(icon: Icon(Icons.star),
                             text: " Best Score:",
-                        width: 110),
+                            width: 110),
                       ],
                     ),
                     SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildSummaryBox(icon: Icon(Icons.restore_from_trash_outlined),
-                            text: " Worst Score:",),
+                        _buildSummaryBox(icon: Icon(Icons
+                            .restore_from_trash_outlined),
+                          text: " Worst Score:",),
                         _buildSummaryBox(icon: Icon(Icons.done_outlined),
-                            text: "Done:",
+                          text: "Done:",
                         ),
 
                       ],
@@ -128,10 +131,10 @@ class _SaraState extends State<sara> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 20),
                     Container(
-                      height: 300,
+                      height: 200,
                       child: ListView.builder(
+
                         itemCount: tasks.length,
                         itemBuilder: (context, index) {
                           return Card(
@@ -187,7 +190,9 @@ class _SaraState extends State<sara> {
       ),
     );
   }
-  Widget _buildSummaryBox({required String text, required Icon icon, double width = 120}) {
+
+  Widget _buildSummaryBox(
+      {required String text, required Icon icon, double width = 120}) {
     return Container(
       width: width,
       height: 100, // Increased height to accommodate icon and text
@@ -204,7 +209,14 @@ class _SaraState extends State<sara> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon,
+          // Modified here
+          IconTheme(
+            data: IconThemeData(
+              color: Colors.black, // Icon color
+              size: 50, // Icon size
+            ),
+            child: icon,
+          ),
           SizedBox(height: 8),
           Text(
             text,
