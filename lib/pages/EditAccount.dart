@@ -26,7 +26,7 @@ class _EditAccountState extends State<EditAccount> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime selectedDate ;
+    DateTime selectedDate =DateTime.now();
     // Todo: change all number with These two
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
@@ -35,13 +35,18 @@ class _EditAccountState extends State<EditAccount> {
 
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Edit Account'),
+        title: const Text('Edit Account', style: TextStyle(
+          color: Colors.white,
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),),
       ),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
             fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
           ),
         ),
         child: Padding(
@@ -50,6 +55,8 @@ class _EditAccountState extends State<EditAccount> {
 
             children: [
               TextFormField(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 decoration: InputDecoration(
                   labelText: '$username',
                   labelStyle: const TextStyle(fontSize: 18, color: Colors.white),
@@ -64,8 +71,10 @@ class _EditAccountState extends State<EditAccount> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 8),
               TextFormField(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 decoration: const InputDecoration(
                   labelText: 'Student ID',
                   labelStyle: TextStyle(fontSize: 18, color: Colors.white),
@@ -80,48 +89,45 @@ class _EditAccountState extends State<EditAccount> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
-             TextFormField(
-               decoration: InputDecoration(
-                 prefixStyle: const TextStyle(fontSize: 18, color: Colors.white,),
-                 labelText: "pick your birthday: "+_birthdayController.text,
+              const SizedBox(height: 8),
+        GestureDetector(
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: selectedDate ?? DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime(2100),
 
-                 labelStyle: const TextStyle(fontSize: 18, color: Colors.white),
-                 enabledBorder: const OutlineInputBorder(
-                   borderSide: BorderSide(color: Colors.white),
-                 ),
-                 focusedBorder: const OutlineInputBorder(
-                   borderSide: BorderSide(color: Colors.white),
-                 ),
-                 suffixIcon: IconButton(
+            );
+            if (pickedDate != null) {
+              setState(() {
+                selectedDate = pickedDate;
+                _birthdayController.text = "${pickedDate.toLocal()}".split(' ')[0];
+              });
+            }
+          },
+          child: AbsorbPointer(
+            child: TextFormField(
+              style: TextStyle(fontSize:20 ,color: Colors.white70),
 
-                   splashColor: Colors.white,
-                   color: Colors.white,
-                   icon: const Icon(
-                     Icons.edit
-                   ),
-
-                   onPressed: () async {
-                       DateTime? picked = await showDatePicker(
-                         context: context,
-                         initialDate:DateTime.now(),
-                         firstDate: DateTime(1900),
-                         lastDate: DateTime(2100),
-                       );
-                       if (picked != null ) {
-                         setState(() {
-                           selectedDate = picked;
-                           _birthdayController.text="${picked.toLocal()}".split(' ')[0];
-                         });
-                       }
-                   }
-                 ),
-
-
-               ),
-             ),
-              const SizedBox(height: 15),
+              controller: _birthdayController,
+              decoration: const InputDecoration(
+                labelText: 'Birthday',
+                labelStyle: TextStyle(fontSize: 18, color: Colors.white),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        ),
+              const SizedBox(height: 8),
               TextFormField(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 controller: _fatherController,
                 decoration: const InputDecoration(
                   labelText: 'Father Name',
@@ -135,8 +141,10 @@ class _EditAccountState extends State<EditAccount> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 8),
               TextFormField(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 controller: _nationalIDController,
                 decoration: const InputDecoration(
                   labelText: 'National ID',
@@ -149,8 +157,10 @@ class _EditAccountState extends State<EditAccount> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 8),
               TextFormField(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 controller: _phoneController,
                 decoration: const InputDecoration(
                   labelText: 'Phone',
@@ -163,8 +173,10 @@ class _EditAccountState extends State<EditAccount> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 8),
               DropdownButtonFormField<BeheshtiUniversityField>(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 decoration: const InputDecoration(
                   labelText: 'Field of Study',
                   labelStyle: TextStyle(fontSize: 18, color: Colors.white),
@@ -195,23 +207,41 @@ class _EditAccountState extends State<EditAccount> {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
               ElevatedButton(
                 onPressed: () {
-
+                  // Handle Save Changes button press
                 },
-                child: const Text(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.blue, backgroundColor: Colors.white, // Text color
+                  padding: EdgeInsets.symmetric(vertical: 15), // Button padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Button border radius
+                  ),
+                ),
+                child: Text(
                   'Save Changes',
                   style: TextStyle(fontSize: 20),
                 ),
               ),
               const SizedBox(height: 10),
               ElevatedButton(
-                onPressed: () => Navigator.push(
+                onPressed: () {
+                  // Navigate to ChangePasswordPage
+                  Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const ChangePasswordPage())),
-                child: const Text(
+                    MaterialPageRoute(builder: (context) => ChangePasswordPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                   backgroundColor: Colors.white,
+                  foregroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 15), // Button padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Button border radius
+                  ),
+                ),
+                child: Text(
                   'Change Password',
                   style: TextStyle(fontSize: 20),
                 ),

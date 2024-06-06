@@ -9,9 +9,9 @@ class sara extends StatefulWidget {
 }
 
 class _SaraState extends State<sara> {
-  List<String> tasks = List<String>.generate(
-      10, (index) => 'Task ${index + 1}');
-  List<String> doneTasks = [];
+  List<Task> tasks = List<Task>.generate(
+      10, (index) => Task('Task ${index + 1}', DateTime.now()));
+  List<Task> doneTasks = [];
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +22,60 @@ class _SaraState extends State<sara> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           actions: [
+            PopupMenuButton<int>(
+               iconColor: Colors.white,
+              itemBuilder: (context) => [
+                PopupMenuItem(
+
+                  value: 1,
+                  child: Row(
+                    children: [
+                      Icon(Icons.contact_mail_rounded),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Contact Us")
+                    ],
+                  ),
+                ),
+                // PopupMenuItem 2
+                PopupMenuItem(
+                  value: 2,
+                  child: Row(
+                    children: [
+                      Icon(Icons.chrome_reader_mode),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("About Us")
+                    ],
+                  ),
+
+                ),
+
+                PopupMenuItem(
+
+                  value: 3,
+                  child: Row(
+                    children: [
+                      Icon(Icons.transit_enterexit),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("GitHub")
+                    ],
+                  ),
+                ),
+               ],
+              color: Colors.white,
+              onSelected: (value) {
+                if (value == 1) {
+                  // _showDialog(context);
+                } else if (value == 2) {
+                  // _showDialog(context);
+                }
+              },
+            ),
             IconButton(
               icon: const Icon(
                 Icons.account_circle_outlined,
@@ -33,11 +87,10 @@ class _SaraState extends State<sara> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        EditAccount(
-                          password: "",
-                          username: "",
-                        ),
+                    builder: (context) => EditAccount(
+                      password: "",
+                      username: "",
+                    ),
                   ),
                 );
               },
@@ -47,40 +100,25 @@ class _SaraState extends State<sara> {
         body: SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: MediaQuery
-                  .of(context)
-                  .size
-                  .height,
+              minHeight: MediaQuery.of(context).size.height,
             ),
             child: IntrinsicHeight(
               child: Container(
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage(
-                      "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg",
+                      "lib/asset/images/casey-horner-4rDCa5hBlCs-unsplash.jpg",
                     ),
                     fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                        Colors.black38, BlendMode.darken),
+                    colorFilter:
+                        ColorFilter.mode(Colors.black26, BlendMode.darken),
                   ),
                 ),
                 padding: EdgeInsets.fromLTRB(
-                  MediaQuery
-                      .of(context)
-                      .size
-                      .height / 25,
-                  MediaQuery
-                      .of(context)
-                      .size
-                      .height / 10,
-                  MediaQuery
-                      .of(context)
-                      .size
-                      .height / 25,
-                  MediaQuery
-                      .of(context)
-                      .size
-                      .height / 25,
+                  MediaQuery.of(context).size.height / 25,
+                  MediaQuery.of(context).size.height / 10,
+                  MediaQuery.of(context).size.height / 25,
+                  MediaQuery.of(context).size.height / 25,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,26 +135,32 @@ class _SaraState extends State<sara> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildSummaryBox(icon: Icon(Icons.school),
+                        _buildSummaryBox(
+                            icon: Icon(Icons.school),
                             text: " Exam:",
-                        width: 110),
-                        _buildSummaryBox(icon: Icon(Icons.task),
-                            text: " DeadLine:",width: 100),
-                        _buildSummaryBox(icon: Icon(Icons.star),
+                            width: 110),
+                        _buildSummaryBox(
+                            icon: Icon(Icons.task),
+                            text: " DeadLine:",
+                            width: 100),
+                        _buildSummaryBox(
+                            icon: Icon(Icons.star),
                             text: " Best Score:",
-                        width: 110),
+                            width: 110),
                       ],
                     ),
                     SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildSummaryBox(icon: Icon(Icons.restore_from_trash_outlined),
-                            text: " Worst Score:",),
-                        _buildSummaryBox(icon: Icon(Icons.done_outlined),
-                            text: "Done:",
+                        _buildSummaryBox(
+                          icon: Icon(Icons.restore_from_trash_outlined),
+                          text: " Worst Score:",
                         ),
-
+                        _buildSummaryBox(
+                          icon: Icon(Icons.done_outlined),
+                          text: "Done:",
+                        ),
                       ],
                     ),
                     SizedBox(height: 20),
@@ -128,9 +172,8 @@ class _SaraState extends State<sara> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 20),
                     Container(
-                      height: 300,
+                      height: 200,
                       child: ListView.builder(
                         itemCount: tasks.length,
                         itemBuilder: (context, index) {
@@ -138,7 +181,14 @@ class _SaraState extends State<sara> {
                             color: Colors.white.withOpacity(0.8),
                             child: ListTile(
                               leading: Icon(Icons.task_outlined),
-                              title: Text(tasks[index]),
+                              title: Text(tasks[index].name,
+                                  style: TextStyle(fontSize: 18)),
+                              subtitle: Text(tasks[index]
+                                  .dateTime
+                                  .toLocal()
+                                  .toString()
+                                  .split(" ")
+                                  .first),
                               trailing: IconButton(
                                 icon: Icon(Icons.circle_outlined),
                                 onPressed: () {
@@ -172,7 +222,8 @@ class _SaraState extends State<sara> {
                             color: Colors.white.withOpacity(0.5),
                             child: ListTile(
                               leading: Icon(Icons.done),
-                              title: Text(doneTasks[index]),
+                              title: Text(doneTasks[index].name,
+                                  style: TextStyle(fontSize: 18)),
                             ),
                           );
                         },
@@ -187,7 +238,9 @@ class _SaraState extends State<sara> {
       ),
     );
   }
-  Widget _buildSummaryBox({required String text, required Icon icon, double width = 120}) {
+
+  Widget _buildSummaryBox(
+      {required String text, required Icon icon, double width = 120}) {
     return Container(
       width: width,
       height: 100, // Increased height to accommodate icon and text
@@ -204,7 +257,14 @@ class _SaraState extends State<sara> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon,
+          // Modified here
+          IconTheme(
+            data: IconThemeData(
+              color: Colors.black, // Icon color
+              size: 50, // Icon size
+            ),
+            child: icon,
+          ),
           SizedBox(height: 8),
           Text(
             text,
@@ -218,4 +278,11 @@ class _SaraState extends State<sara> {
       ),
     );
   }
+}
+
+class Task {
+  String name;
+  DateTime dateTime;
+
+  Task(this.name, this.dateTime);
 }

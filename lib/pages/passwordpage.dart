@@ -22,7 +22,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Change Password'),
+        title: const Text('Change Password',style: TextStyle(
+          color: Colors.white,
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        )),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -30,6 +34,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             image: AssetImage(
                 "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
             fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
+
           ),
         ),
         child: Padding(
@@ -80,6 +86,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
               const SizedBox(height: 30),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.blue,
+
+                ),
                 onPressed: () {
                   setState(() {
                     _isValid = validatePassword(_newPasswordController.text);
