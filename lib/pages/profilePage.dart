@@ -48,8 +48,11 @@ class _profileScreenState extends State<profileScreen> {
 backgroundColor:Colors.transparent,
             title: Text(
               "Profile",
-
-              style: TextStyle(color: Colors.black,),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                )
             ),
           ),
           body: SingleChildScrollView(
@@ -108,7 +111,7 @@ backgroundColor:Colors.transparent,
                             ],
                           ),
                           SizedBox(
-                            height: height / 30,
+                            height: height / 100,
                           ),
                           Text(
                             "$username",
@@ -128,7 +131,7 @@ backgroundColor:Colors.transparent,
                           top: height / 3, left: width / 20, right: width / 20),
                       child: Column(
                         children: <Widget>[
-                          SizedBox(),
+                          SizedBox(height: height/50,),
                           Column(
                             children: [
                               Container(

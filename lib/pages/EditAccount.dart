@@ -55,6 +55,8 @@ class _EditAccountState extends State<EditAccount> {
 
             children: [
               TextFormField(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 decoration: InputDecoration(
                   labelText: '$username',
                   labelStyle: const TextStyle(fontSize: 18, color: Colors.white),
@@ -69,8 +71,10 @@ class _EditAccountState extends State<EditAccount> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               TextFormField(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 decoration: const InputDecoration(
                   labelText: 'Student ID',
                   labelStyle: TextStyle(fontSize: 18, color: Colors.white),
@@ -85,7 +89,7 @@ class _EditAccountState extends State<EditAccount> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
         GestureDetector(
           onTap: () async {
             DateTime? pickedDate = await showDatePicker(
@@ -104,6 +108,8 @@ class _EditAccountState extends State<EditAccount> {
           },
           child: AbsorbPointer(
             child: TextFormField(
+              style: TextStyle(fontSize:20 ,color: Colors.white70),
+
               controller: _birthdayController,
               decoration: const InputDecoration(
                 labelText: 'Birthday',
@@ -118,8 +124,10 @@ class _EditAccountState extends State<EditAccount> {
             ),
           ),
         ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               TextFormField(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 controller: _fatherController,
                 decoration: const InputDecoration(
                   labelText: 'Father Name',
@@ -133,8 +141,10 @@ class _EditAccountState extends State<EditAccount> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               TextFormField(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 controller: _nationalIDController,
                 decoration: const InputDecoration(
                   labelText: 'National ID',
@@ -147,8 +157,10 @@ class _EditAccountState extends State<EditAccount> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               TextFormField(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 controller: _phoneController,
                 decoration: const InputDecoration(
                   labelText: 'Phone',
@@ -161,8 +173,10 @@ class _EditAccountState extends State<EditAccount> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               DropdownButtonFormField<BeheshtiUniversityField>(
+                style: TextStyle(fontSize:20 ,color: Colors.white70),
+
                 decoration: const InputDecoration(
                   labelText: 'Field of Study',
                   labelStyle: TextStyle(fontSize: 18, color: Colors.white),
@@ -193,7 +207,7 @@ class _EditAccountState extends State<EditAccount> {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
               ElevatedButton(
                 onPressed: () {
                   // Handle Save Changes button press
