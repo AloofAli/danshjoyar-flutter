@@ -80,6 +80,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
               const SizedBox(height: 30),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.blue,
+                ),
                 onPressed: () {
                   setState(() {
                     _isValid = validatePassword(_newPasswordController.text);
