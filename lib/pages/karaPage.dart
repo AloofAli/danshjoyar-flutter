@@ -14,7 +14,6 @@ class _karaState extends State<kara> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -85,7 +84,7 @@ class _karaState extends State<kara> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
+                   Text(
                     'Completed Tasks:',
                     style: TextStyle(
                       fontSize: 24,
@@ -101,9 +100,9 @@ class _karaState extends State<kara> {
                         return Card(
                           color: Colors.white.withOpacity(0.5),
                           child: ListTile(
-                            leading: const Icon(Icons.done),
+                            leading:  Icon(Icons.done),
                             title: Text(doneTasks[index].name,
-                                style: const TextStyle(fontSize: 18)),
+                                style:  TextStyle(fontSize: 18)),
                           ),
                         );
                       },
@@ -121,9 +120,7 @@ class _karaState extends State<kara> {
             context: context,
             isScrollControlled: true,
             builder: (context) => TaskBottomSheet(tasks: allTasks),
-          ).then((_) {
-            setState(() {});  // Rebuild the UI after closing the bottom sheet
-          });
+          );
         },
         child: const Icon(
           Icons.add,
@@ -306,6 +303,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                 _timeController.clear();
               });
               Navigator.pop(context);
+              (context as Element).markNeedsBuild();
             },
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
