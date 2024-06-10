@@ -10,6 +10,12 @@ class classa extends StatefulWidget {
 class _classaState extends State<classa> {
   List<Celas> classes = [];
 
+  void addClass(Celas celas) {
+    setState(() {
+      classes.add(celas);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,24 +52,27 @@ class _classaState extends State<classa> {
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
-                      builder: (context) =>
-                          AddClassBottomSheet(classes: classes),
+                      builder: (context) => AddClassBottomSheet(
+                        addClassCallback: addClass,
+                      ),
                       isScrollControlled: true,
                     );
                   },
                   child: const Row(
                     children: [
-                      Text("Add Class",style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black54,
-                      ),),
+                      Text(
+                        "Add Class",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black54,
+                        ),
+                      ),
                       SizedBox(width: 16),
                       Icon(
                         Icons.add,
                         color: Colors.cyan,
                         size: 20,
                       ),
-
                     ],
                   ),
                 ),
@@ -91,7 +100,6 @@ class _classaState extends State<classa> {
                           ],
                         ),
                         padding: const EdgeInsets.all(16),
-
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -181,9 +189,9 @@ class _classaState extends State<classa> {
 }
 
 class AddClassBottomSheet extends StatefulWidget {
-  final List<Celas> classes;
+  final Function(Celas) addClassCallback;
 
-  const AddClassBottomSheet({super.key, required this.classes});
+  const AddClassBottomSheet({super.key, required this.addClassCallback});
 
   @override
   State<AddClassBottomSheet> createState() => _AddClassBottomSheetState();
@@ -238,11 +246,8 @@ class _AddClassBottomSheetState extends State<AddClassBottomSheet> {
           ElevatedButton(
             onPressed: () {
               final celas = Celas();
-              setState(() {
-                widget.classes.add(celas);
-              });
+              widget.addClassCallback(celas);
               Navigator.pop(context);
-              (context as Element).markNeedsBuild();
             },
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
