@@ -83,7 +83,8 @@ class _classaState extends State<classa> {
                 itemCount: classes.length,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 2.0, horizontal: 0),
                     child: Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -110,7 +111,8 @@ class _classaState extends State<classa> {
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Class ${index + 1}',
@@ -161,8 +163,7 @@ class _classaState extends State<classa> {
                             const SizedBox(height: 8),
                             const Row(
                               children: [
-                                Icon(Icons.star,
-                                    size: 20, color: Colors.cyan),
+                                Icon(Icons.star, size: 20, color: Colors.cyan),
                                 SizedBox(width: 8),
                                 Text(
                                   "Best Student: Ali Alavi",
@@ -198,7 +199,8 @@ class AddClassBottomSheet extends StatefulWidget {
 }
 
 class _AddClassBottomSheetState extends State<AddClassBottomSheet> {
-  TextEditingController codeController = TextEditingController();
+  TextEditingController CourseController = TextEditingController();
+  TextEditingController TeacherController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -220,10 +222,36 @@ class _AddClassBottomSheetState extends State<AddClassBottomSheet> {
               color: Colors.cyan,
             ),
           ),
+          SizedBox(
+            height: 20,
+          ),
           TextFormField(
-            controller: codeController,
+            controller: TeacherController,
             decoration: InputDecoration(
-              labelText: "Enter Class Code",
+              labelText: "Enter Teacher Name",
+              labelStyle: TextStyle(
+                fontSize: 18,
+                color: Colors.grey[700],
+              ),
+              filled: true,
+              fillColor: Colors.grey[200],
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(color: Colors.cyan),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(color: Colors.cyan),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          TextFormField(
+            controller: CourseController,
+            decoration: InputDecoration(
+              labelText: "Enter Course Name",
               labelStyle: TextStyle(
                 fontSize: 18,
                 color: Colors.grey[700],
