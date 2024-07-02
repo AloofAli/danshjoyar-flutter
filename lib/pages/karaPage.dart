@@ -8,13 +8,18 @@ class kara extends StatefulWidget {
 }
 
 class _karaState extends State<kara> {
-  List<Task> allTasks = [];
+  List<Task> allTasks = [Task("1", "2024/12/12", "test")];
   List<Task> doneTasks = [];
+
+  void addTask(Task task) {
+    setState(() {
+      allTasks.add(task);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -76,7 +81,9 @@ class _karaState extends State<kara> {
                             trailing: IconButton(
                               icon: const Icon(Icons.arrow_forward_ios_outlined),
                               onPressed: () {
-                                setState(() {});
+                                setState(() {
+                                  //TODO
+                                });
                               },
                             ),
                           ),
@@ -85,7 +92,7 @@ class _karaState extends State<kara> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
+                  Text(
                     'Completed Tasks:',
                     style: TextStyle(
                       fontSize: 24,
@@ -101,9 +108,9 @@ class _karaState extends State<kara> {
                         return Card(
                           color: Colors.white.withOpacity(0.5),
                           child: ListTile(
-                            leading: const Icon(Icons.done),
+                            leading:  Icon(Icons.done),
                             title: Text(doneTasks[index].name,
-                                style: const TextStyle(fontSize: 18)),
+                                style:  TextStyle(fontSize: 18)),
                           ),
                         );
                       },
@@ -120,10 +127,10 @@ class _karaState extends State<kara> {
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
-            builder: (context) => TaskBottomSheet(tasks: allTasks),
-          ).then((_) {
-            setState(() {});  // Rebuild the UI after closing the bottom sheet
-          });
+            builder: (context) => TaskBottomSheet(
+              addTaskCallback: addTask,
+            ),
+          );
         },
         child: const Icon(
           Icons.add,
@@ -136,9 +143,9 @@ class _karaState extends State<kara> {
 }
 
 class TaskBottomSheet extends StatefulWidget {
-  final List<Task> tasks;
+  final Function(Task) addTaskCallback;
 
-  const TaskBottomSheet({super.key, required this.tasks});
+  const TaskBottomSheet({super.key, required this.addTaskCallback});
 
   @override
   _TaskBottomSheetState createState() => _TaskBottomSheetState();
@@ -298,13 +305,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                 "${_dateController.text} ${_timeController.text}",
                 _descriptionController.text,
               );
-              setState(() {
-                widget.tasks.add(task);
-                _subjectController.clear();
-                _descriptionController.clear();
-                _dateController.clear();
-                _timeController.clear();
-              });
+              widget.addTaskCallback(task);
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(

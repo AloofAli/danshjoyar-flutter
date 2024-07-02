@@ -1,5 +1,7 @@
 import 'package:danshjoyar/pages/EditAccount.dart';
+import 'package:danshjoyar/pages/profilePage.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class sara extends StatefulWidget {
   const sara({super.key});
@@ -25,54 +27,43 @@ class _SaraState extends State<sara> {
             PopupMenuButton<int>(
                iconColor: Colors.white,
               itemBuilder: (context) => [
-                PopupMenuItem(
-
-                  value: 1,
-                  child: Row(
-                    children: [
-                      Icon(Icons.contact_mail_rounded),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text("Contact Us")
-                    ],
-                  ),
-                ),
-                // PopupMenuItem 2
-                PopupMenuItem(
-                  value: 2,
-                  child: Row(
-                    children: [
-                      Icon(Icons.chrome_reader_mode),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text("About Us")
-                    ],
-                  ),
-
-                ),
 
                 PopupMenuItem(
 
                   value: 3,
                   child: Row(
                     children: [
-                      Icon(Icons.transit_enterexit),
+                      Icon(Icons.laptop_windows_sharp),
                       SizedBox(
                         width: 10,
                       ),
-                      Text("GitHub")
+                      Text("Backend Github")
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+
+                  value: 4,
+                  child: Row(
+                    children: [
+                      Icon(Icons.laptop_windows_sharp),
+
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Frontend Github")
                     ],
                   ),
                 ),
                ],
               color: Colors.white,
               onSelected: (value) {
-                if (value == 1) {
-                  // _showDialog(context);
-                } else if (value == 2) {
-                  // _showDialog(context);
+
+                if (value == 3) {
+                  _launchURL(Uri.parse('https://github.com/Aminxh/danshjooyar_back'));
+                }
+                else if (value == 4) {
+                   _launchURL(Uri.parse('https://github.com/AloofAli/danshjoyar-flutter'));
                 }
               },
             ),
@@ -87,10 +78,7 @@ class _SaraState extends State<sara> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EditAccount(
-                      password: "",
-                      username: "",
-                    ),
+                    builder: (context) => profileScreen(username: "",password: "",)
                   ),
                 );
               },
@@ -285,4 +273,9 @@ class Task {
   DateTime dateTime;
 
   Task(this.name, this.dateTime);
+}
+_launchURL(Uri url) async {
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+      throw Exception('Could not launch $url');
+    }
 }

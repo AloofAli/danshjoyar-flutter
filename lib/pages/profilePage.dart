@@ -8,22 +8,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 
 class profileScreen extends StatefulWidget {
   final String username;
-
   final String password;
 
-  const profileScreen(
-      {super.key, required this.username, required this.password});
+  const profileScreen({super.key, required this.username, required this.password});
 
   @override
   State<profileScreen> createState() => _profileScreenState(username, password);
 }
 
+File? _image;
+
 class _profileScreenState extends State<profileScreen> {
   final String username;
-
   final String password;
 
   _profileScreenState(this.username, this.password);
@@ -37,22 +37,20 @@ class _profileScreenState extends State<profileScreen> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    File? _image;
 
     return Stack(
       children: <Widget>[
         Scaffold(
           extendBodyBehindAppBar: true,
-
           appBar: AppBar(
-backgroundColor:Colors.transparent,
+            backgroundColor: Colors.transparent,
             title: Text(
               "Profile",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                )
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           body: SingleChildScrollView(
@@ -60,11 +58,11 @@ backgroundColor:Colors.transparent,
               height: height,
               child: Container(
                 decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(
-                            "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
-                        fit: BoxFit.cover,
-                    )),
+                  image: DecorationImage(
+                    image: AssetImage("lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: <Widget>[
@@ -73,53 +71,32 @@ backgroundColor:Colors.transparent,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Stack(
-                            children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                    _image != null ? FileImage(_image!) : null,
-                                radius: height / 10,
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: GestureDetector(
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.black54,
-                                    radius: 20,
-                                    child: IconButton(
-                                      icon: Icon(Icons.camera_alt),
-                                      color: Colors.white,
-                                      onPressed: () async {
-                                        FilePickerResult? result =
-                                            await FilePicker.platform.pickFiles(
-                                                type: FileType.image);
-                                        if (result != null) {
-                                          File file =
-                                              File(result.files.single.path!);
-                                          setState(() {
-                                            _image = file;
-                                          });
-                                        } else {
-                                          // User canceled the picker
-                                        }
-                                      },
-                                    ),
-                                  ),
+                          GestureDetector(
+                            onTap: _load,
+                            child: CircleAvatar(
+                              radius: 70,
+                              backgroundColor: Colors.white,
+                              child: ClipOval(
+                                child: _image == null
+                                    ? Icon(Icons.camera_alt, size: 70, color: Colors.grey)
+                                    : Image.file(
+                                  _image!,
+                                  fit: BoxFit.cover,
+                                  width: 140,
+                                  height: 140,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                          SizedBox(
-                            height: height / 100,
-                          ),
+                          SizedBox(height: height / 100),
                           Text(
-                            "$username",
+                            username,
                             style: const TextStyle(
-                                fontSize: 24.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          )
+                              fontSize: 24.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -127,89 +104,81 @@ backgroundColor:Colors.transparent,
                       padding: EdgeInsets.only(top: height / 3),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(
-                          top: height / 3, left: width / 20, right: width / 20),
+                      padding: EdgeInsets.only(top: height / 3, left: width / 20, right: width / 20),
                       child: Column(
                         children: <Widget>[
-                          SizedBox(height: height/50,),
+                          SizedBox(height: height / 50),
                           Column(
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(30.0)),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
                                 margin: const EdgeInsets.all(16.0),
                                 child: Table(
-                                  defaultVerticalAlignment:
-                                      TableCellVerticalAlignment.middle,
+                                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                                   children: [
                                     _buildTableRow("StudentID", "0441281850"),
-                                    _buildTableRow("Total Avrage", "18.5"),
+                                    _buildTableRow("Total Average", "18.5"),
                                     _buildTableRow("Current Term", "2"),
-                                    _buildTableRow("Current term Credit", "18"),
-                                    _buildTableRow("Total passed Credit", "31"),
+                                    _buildTableRow("Current Term Credit", "18"),
+                                    _buildTableRow("Total Passed Credit", "31"),
                                   ],
                                 ),
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(30.0)),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
                                 margin: const EdgeInsets.all(16.0),
                                 child: Table(
-                                    defaultVerticalAlignment:
-                                        TableCellVerticalAlignment.middle,
-                                    children: [
-                                      TableRow(
-                                        children: [
-                                          TableCell(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(12.0),
-                                              child: Text(
-                                                "Edit acoount",
-                                                style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 20),
-                                              ),
+                                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                                  children: [
+                                    TableRow(
+                                      children: [
+                                        TableCell(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Text(
+                                              "Edit account",
+                                              style: const TextStyle(color: Colors.grey, fontSize: 20),
                                             ),
                                           ),
-                                          TableCell(
-                                            child: Padding(
-                                              padding: EdgeInsets.all(12.0),
-                                              child: IconButton(
-                                                splashColor: Colors.white,
-                                                tooltip: "Edit account",
-                                                icon: Icon(
-                                                  // Based on passwordVisible state choose the icon
-                                                  Icons.edit,
-                                                  color: CupertinoColors
-                                                      .systemTeal,
-                                                ),
-                                                onPressed: () {
-                                                  setState(() {});
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              EditAccount(
-                                                                  username:
-                                                                      username,
-                                                                  password:
-                                                                      password)));
-                                                },
+                                        ),
+                                        TableCell(
+
+                                          child: Padding(
+                                            padding: EdgeInsets.all(12.0),
+                                            child: IconButton(
+                                              splashColor: Colors.white,
+                                              tooltip: "Edit account",
+
+                                              icon: Icon(
+                                                Icons.edit,
+                                                color: CupertinoColors.systemTeal,
                                               ),
+                                              onPressed: () {
+                                                setState(() {});
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => EditAccount(username: username, password: password),
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ]),
-                              )
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
-                          SizedBox(
-                            height: height / 20,
-                          ),
+                          SizedBox(height: height / 30),
                           TextButton(
                             style: ElevatedButton.styleFrom(
                               shape: const StadiumBorder(),
@@ -219,37 +188,37 @@ backgroundColor:Colors.transparent,
                               context: context,
                               builder: (BuildContext context) => AlertDialog(
                                 title: const Text('Are you sure?'),
-                                content: const Text(
-                                    '"Warning: This button permanently deletes your account and all associated data. Proceed with caution, as this action cannot be undone."'),
+                                content: const Text('"Warning: This button permanently deletes your account and all associated data. Proceed with caution, as this action cannot be undone."'),
                                 actions: <Widget>[
                                   TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'Cancel'),
-                                    child: const Text('No'
-                                        ''),
+                                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                                    child: const Text('No'),
                                   ),
                                   TextButton(
                                     child: const Text('Yes'),
                                     onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SignUpPage())),
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const SignUpPage(),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                            child: const Text('delete account',
-                                style: TextStyle(
-                                  letterSpacing: 3.5,
-                                  color: Colors.cyan,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                )),
+                            child: const Text(
+                              'Delete account',
+                              style: TextStyle(
+                                letterSpacing: 3.5,
+                                color: Colors.cyan,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -258,6 +227,22 @@ backgroundColor:Colors.transparent,
         ),
       ],
     );
+  }
+
+  void _loadimage(File file) {
+    setState(() {
+      _image = file;
+    });
+  }
+
+  Future<void> _load() async {
+    var picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
   }
 }
 
@@ -269,8 +254,7 @@ TableRow _buildTableRow(String label, String value) {
           padding: const EdgeInsets.all(12.0),
           child: Text(
             label,
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 15),
+            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 15),
           ),
         ),
       ),
