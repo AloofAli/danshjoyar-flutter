@@ -1,5 +1,6 @@
 import 'package:danshjoyar/pages/profilePage.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,6 +11,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
+  bool userCanLogin = false ;
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -94,12 +96,21 @@ class _LoginPageState extends State<LoginPage> {
               style: ElevatedButton.styleFrom(
                   shape: const StadiumBorder(),
                   backgroundColor: Colors.black12),
-              onPressed: () {
+              onPressed: ()async {
                 String username = usernameController.text;
                 String password = passwordController.text;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>  profileScreen(username: username, password: password)));
+                await loginChecker(username, password);
+                if (userCanLogin) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          profileScreen(
+                              username: username, password: password)));
+                }
+                else if (!userCanLogin)
+                  {
+                    print(".............................................................................................................");
+                  }
               },
               child: const Text('Login',
                   style: TextStyle(
@@ -122,6 +133,25 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
     super.dispose();
   }
+  
+  Future<String> loginChecker(String username, String password) async {
+    String userData = username + "-|-" + password ;
+    String userExist = '' ;
+    var socket = await Socket.connect("192.168.20.2", 7777);
+    socket.write(userData);
+    socket.flush();
+    await socket.listen((response) {
+      userExist += response.toString() ;
+    });
+    print(userExist);
+    if (userExist == "true") {
+      setState(() {
+      userCanLogin = true ;
+
+      });
+    }
+    return userExist ;
+}
 }
 
 
