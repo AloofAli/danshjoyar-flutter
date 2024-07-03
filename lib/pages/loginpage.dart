@@ -1,8 +1,10 @@
+import 'package:danshjoyar/mainPageHandler.dart';
 import 'package:danshjoyar/pages/profilePage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:toastification/toastification.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,7 +15,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
-  bool userCanLogin = false ;
+  bool userCanLogin = false;
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -26,39 +28,48 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery
+        .of(context)
+        .size
+        .width;
+    final height = MediaQuery
+        .of(context)
+        .size
+        .height;
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
-          image: AssetImage(
-              "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
-          fit: BoxFit.cover,
-          filterQuality: FilterQuality.high,
-        )),
-        padding:  EdgeInsets.fromLTRB(height/25, height/25, height/25, 0),
+              image: AssetImage(
+                  "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.high,
+            )),
+        padding: EdgeInsets.fromLTRB(height / 25, height / 25, height / 25, 0),
 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Image.asset(
               "lib/asset/images/Sbu-logo.svg.png",
-              scale: MediaQuery.of(context).size.width / 60,
+              scale: MediaQuery
+                  .of(context)
+                  .size
+                  .width / 60,
               filterQuality: FilterQuality.high,
             ),
 
             TextField(
               controller: usernameController,
               cursorColor: Colors.cyan,
-                style: TextStyle(fontSize:20 ,color: Colors.white70),
+              style: TextStyle(fontSize: 20, color: Colors.white70),
               decoration: const InputDecoration(
                 labelText: 'Username',
                 labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your username',
                 hintStyle: TextStyle(fontSize: 20.0, color: Colors.white70),
                 icon: Icon(Icons.account_circle_sharp,
-                size: 35,),
+                  size: 35,),
                 iconColor: Colors.white,
               ),
             ),
@@ -67,16 +78,16 @@ class _LoginPageState extends State<LoginPage> {
               keyboardType: TextInputType.text,
               controller: passwordController,
               obscureText: !_passwordVisible,
-              style: TextStyle(fontSize:20 ,color: Colors.white70),
+              style: TextStyle(fontSize: 20, color: Colors.white70),
               decoration: InputDecoration(
                 labelText: 'Password',
                 labelStyle:
-                    const TextStyle(fontSize: 20.0, color: Colors.white),
+                const TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your password',
                 hintStyle:
-                    const TextStyle(fontSize: 20.0, color: Colors.white70),
+                const TextStyle(fontSize: 20.0, color: Colors.white70),
                 icon: const Icon(Icons.key,
-                size: 35,),
+                  size: 35,),
                 iconColor: Colors.white,
 
                 suffixIcon: IconButton(
@@ -84,7 +95,9 @@ class _LoginPageState extends State<LoginPage> {
                   tooltip: "Change visibility",
                   icon: Icon(
                     _passwordVisible ? Icons.visibility_off : Icons.visibility,
-                    color: Theme.of(context).dialogBackgroundColor,
+                    color: Theme
+                        .of(context)
+                        .dialogBackgroundColor,
                   ),
                   onPressed: () {
                     setState(() {
@@ -98,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
               style: ElevatedButton.styleFrom(
                   shape: const StadiumBorder(),
                   backgroundColor: Colors.black12),
-              onPressed: ()async {
+              onPressed: () async {
                 String username = usernameController.text;
                 String password = passwordController.text;
                 await loginChecker(username, password);
@@ -106,13 +119,14 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) =>
-                          profileScreen(
+                          mainPageHandler(
                               username: username, password: password)));
                 }
-                else if (!userCanLogin)
-                  {
-                    print(".............................................................................................................");
-                  }
+                else if (!userCanLogin) {
+                  setState(() {
+                    error();
+                  });
+                }
               },
               child: const Text('Login',
                   style: TextStyle(
@@ -135,10 +149,10 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
     super.dispose();
   }
-  
+
   Future<String> loginChecker(String username, String password) async {
-    String userData = username + "~" + password ;
-    String userExist = '' ;
+    String userData = username + "~" + password;
+    String userExist = '';
     // var socket = await Socket.connect("172.20.109.42", 7777).then()(
     //
     // );
@@ -151,25 +165,56 @@ class _LoginPageState extends State<LoginPage> {
     // });
     await Socket.connect("172.20.109.42", 7777).then((serverSocket) {
       serverSocket
-          .write('$userData\u0000');
+          .write('LOGIN~$userData\u0000');
       serverSocket.flush();
       serverSocket.listen((socketResponse) {
-          print(socketResponse);
+        print(socketResponse);
         setState(() {
           print(socketResponse);
           userExist = String.fromCharCodes(socketResponse);
-    print(userExist);
-    if (userExist == "true") {
-      setState(() {
-      userCanLogin = true ;
-      });
-        }});
+          print(userExist);
+          if (userExist == "true") {
+            setState(() {
+              userCanLogin = true;
+            });
+          }
+        });
       });
     });
 
-    return userExist ;
-    }
+    return userExist;
+  }
+
+  void error() {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flatColored,
+      autoCloseDuration: const Duration(seconds: 7),
+      title: const Text("Invalid Password"),
+      description: Text("Your password or username is invalid"),
+      alignment: Alignment.topCenter,
+      animationDuration: const Duration(milliseconds: 300),
+      animationBuilder: (context, animation, alignment, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      icon: const Icon(Icons.error),
+      primaryColor: Colors.red,
+      backgroundColor: Colors.black54,
+      foregroundColor: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+      borderRadius: BorderRadius.circular(30),
+      showProgressBar: true,
+      closeButtonShowType: CloseButtonShowType.always,
+      closeOnClick: true,
+      pauseOnHover: true,
+      dragToClose: true,
+      applyBlurEffect: true,
+    );
+    ToastificationStyle;
+  }
 }
-
-
-
