@@ -2,6 +2,8 @@ import 'package:danshjoyar/pages/profilePage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -135,23 +137,39 @@ class _LoginPageState extends State<LoginPage> {
   }
   
   Future<String> loginChecker(String username, String password) async {
-    String userData = username + "-|-" + password ;
+    String userData = username + "~" + password ;
     String userExist = '' ;
-    var socket = await Socket.connect("192.168.20.2", 7777);
-    socket.write(userData);
-    socket.flush();
-    await socket.listen((response) {
-      userExist += response.toString() ;
-    });
+    // var socket = await Socket.connect("172.20.109.42", 7777).then()(
+    //
+    // );
+    // socket.write(userData+"\u0000");
+    // socket.flush();
+    // socket.listen((socketResponse) {
+    //   setState(() {
+    //     userExist = String.fromCharCodes(socketResponse);
+    //   });
+    // });
+    await Socket.connect("172.20.109.42", 7777).then((serverSocket) {
+      serverSocket
+          .write('$userData\u0000');
+      serverSocket.flush();
+      serverSocket.listen((socketResponse) {
+          print(socketResponse);
+        setState(() {
+          print(socketResponse);
+          userExist = String.fromCharCodes(socketResponse);
     print(userExist);
     if (userExist == "true") {
       setState(() {
       userCanLogin = true ;
-
       });
-    }
+        }});
+      });
+    });
+
     return userExist ;
+    }
 }
-}
+
 
 
