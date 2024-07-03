@@ -163,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
     //     userExist = String.fromCharCodes(socketResponse);
     //   });
     // });
-    await Socket.connect("172.20.109.42", 7777).then((serverSocket) {
+    await Socket.connect("172.20.109.79", 7777).then((serverSocket) {
       serverSocket
           .write('LOGIN~$userData\u0000');
       serverSocket.flush();

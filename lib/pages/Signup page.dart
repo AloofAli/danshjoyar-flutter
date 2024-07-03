@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:danshjoyar/mainPageHandler.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +12,13 @@ class SignUpPage extends StatefulWidget {
   _SignUpPageState createState() => _SignUpPageState();
 }
 
+//-----------------------------------------------------------------------------
+
 class _SignUpPageState extends State<SignUpPage> {
   bool _passwordVisible = false;
   bool _isValid = false;
   String _errorMessage = '';
+  bool userCanSignUp = false ;
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -119,16 +124,31 @@ class _SignUpPageState extends State<SignUpPage> {
                 shape: const StadiumBorder(),
                 backgroundColor: Colors.black12,
               ),
-              onPressed: () {
-                setState(() {
-                  _isValid = _validatePassword(passwordController.text);
-                });
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => mainPageHandler(
-                            username: usernameController.text,
-                            password: passwordController.text)));
+              onPressed: () async {
+                    setState(() {
+                    _isValid = _validatePassword(passwordController.text);
+                  });
+                    String username = usernameController.text;
+                    String studentID = studentIDController.text;
+                    String password = passwordController.text;
+
+                    await signupChecker(username, studentID, password);
+
+                    if (userCanSignUp)
+                    {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  mainPageHandler(
+                                      username: usernameController.text,
+                                      password: passwordController.text)));
+                    }
+
+                    if (!userCanSignUp)
+                    {
+
+                    }
               },
               child: const Text('Register',
                   style: TextStyle(
@@ -144,6 +164,8 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+//-----------------------------------------------------------------------------
+
   @override
   void dispose() {
     usernameController.dispose();
@@ -151,6 +173,8 @@ class _SignUpPageState extends State<SignUpPage> {
     studentIDController.dispose();
     super.dispose();
   }
+
+//-----------------------------------------------------------------------------
 
   bool _validatePassword(String password) {
     // Reset error message
@@ -184,6 +208,8 @@ class _SignUpPageState extends State<SignUpPage> {
     return _errorMessage.isEmpty;
   }
 
+//-----------------------------------------------------------------------------
+
   void error() {
     toastification.show(
       context: context,
@@ -215,5 +241,32 @@ class _SignUpPageState extends State<SignUpPage> {
       applyBlurEffect: true,
     );
     ToastificationStyle;
+  }
+
+//-----------------------------------------------------------------------------
+
+  Future<String> signupChecker(String username ,String studentID ,String password) async {
+    String userData = username + "~" + studentID + "~" + password;
+    String canUserSignUp = '';
+    await Socket.connect("172.20.109.79", 7777).then((serverSocket) {
+      serverSocket
+          .write('SIGNUP~$userData\u0000');
+      serverSocket.flush();
+      serverSocket.listen((socketResponse) {
+        print(socketResponse);
+        setState(() {
+          print(socketResponse);
+          canUserSignUp = String.fromCharCodes(socketResponse);
+          print(canUserSignUp);
+          if (canUserSignUp == "not repetitive") {
+            setState(() {
+              userCanSignUp = true;
+            });
+          }
+        });
+      });
+    });
+
+    return canUserSignUp;
   }
 }
