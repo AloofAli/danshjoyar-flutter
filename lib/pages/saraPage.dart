@@ -4,16 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class sara extends StatefulWidget {
-  const sara({super.key});
+  final String username;
+  final String password;
+  sara({required this.username, required this.password});
 
   @override
-  State<sara> createState() => _SaraState();
+  State<sara> createState() => _SaraState(username, password);
 }
 
 class _SaraState extends State<sara> {
   List<Task> tasks = List<Task>.generate(
       10, (index) => Task('Task ${index + 1}', DateTime.now()));
   List<Task> doneTasks = [];
+  final String username;
+  final String password;
+  _SaraState(this.username, this.password);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +83,7 @@ class _SaraState extends State<sara> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => profileScreen(username: "",password: "",)
+                    builder: (context) => profileScreen(username: username,password: password)
                   ),
                 );
               },
