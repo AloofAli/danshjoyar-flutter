@@ -1,18 +1,37 @@
+import 'dart:io';
+
+import 'package:danshjoyar/pages/classaPage.dart';
 import 'package:flutter/material.dart';
 
 class classa extends StatefulWidget {
-  const classa({super.key});
+  String username;
+
+   classa({required  this.username, super.key});
 
   @override
-  State<classa> createState() => _classaState();
+  State<classa> createState() => _classaState(username);
 }
 
 class _classaState extends State<classa> {
-  List<Celas> classes = [];
 
-  void addClass(Celas celas) {
+  String username;
+  _classaState(this.username);
+  List<Courses> _classes = [];
+  void initState() {
+    super.initState();
+    _loadClasses(username);
+  }
+  void addClass(Courses celas) {
     setState(() {
-      classes.add(celas);
+      _classes.add(celas);
+    });
+  }
+  Future<void> _loadClasses(String username) async {
+
+    List<Courses> classes = await checker(username);
+    setState(() {
+      print("$classes");
+      _classes = classes;
     });
   }
 
@@ -53,7 +72,8 @@ class _classaState extends State<classa> {
                     showModalBottomSheet(
                       context: context,
                       builder: (context) => AddClassBottomSheet(
-                        addClassCallback: addClass,
+                        username: username,
+                        addClassCallback: _loadClasses,
                       ),
                       isScrollControlled: true,
                     );
@@ -80,7 +100,7 @@ class _classaState extends State<classa> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: classes.length,
+                itemCount: _classes.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
@@ -115,7 +135,7 @@ class _classaState extends State<classa> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Class ${index + 1}',
+                                        ' ${_classes.elementAt(index).name}',
                                         style: const TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
@@ -131,13 +151,13 @@ class _classaState extends State<classa> {
                               ],
                             ),
                             const SizedBox(height: 8),
-                            const Row(
+                             Row(
                               children: [
                                 Icon(Icons.numbers,
                                     size: 20, color: Colors.cyan),
                                 SizedBox(width: 8),
                                 Text(
-                                  "Credit: 3",
+                                  "Credit: ${_classes.elementAt(index).Credit}",
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.black54,
@@ -146,13 +166,13 @@ class _classaState extends State<classa> {
                               ],
                             ),
                             const SizedBox(height: 8),
-                            const Row(
+                             Row(
                               children: [
                                 Icon(Icons.class_,
                                     size: 20, color: Colors.cyan),
                                 SizedBox(width: 8),
                                 Text(
-                                  "Assignment: 5",
+                                  "Assignment:${_classes.elementAt(index).NumberOfAssignment}",
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.black54,
@@ -161,12 +181,12 @@ class _classaState extends State<classa> {
                               ],
                             ),
                             const SizedBox(height: 8),
-                            const Row(
+                             Row(
                               children: [
                                 Icon(Icons.star, size: 20, color: Colors.cyan),
                                 SizedBox(width: 8),
                                 Text(
-                                  "Best Student: Ali Alavi",
+                                  "Students:${_classes.elementAt(index).NumberOfStudents}",
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.black54,
@@ -187,12 +207,39 @@ class _classaState extends State<classa> {
       ),
     );
   }
-}
+
+
+    Future<List<Courses>> checker(String username ) async {
+      List<Courses> course=[];
+      await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+        serverSocket
+            .write('SHOWCLASS~$username\u0000');
+        serverSocket.flush();
+        serverSocket.listen((socketResponse) {
+          setState(() {
+            String result=String.fromCharCodes(socketResponse);
+            List spilited=result.split('~');
+            for(int i=0;i<spilited.length;i=i+4){
+              print(spilited[i]+ spilited[i+1]+spilited[i+2]+spilited[i+3]);
+              course.add(Courses(spilited[i], spilited[i+1],spilited[i+2],spilited[i+3]));
+            }
+          });
+        });
+
+      });
+
+      return course;
+    }
+
+  }
+
 
 class AddClassBottomSheet extends StatefulWidget {
-  final Function(Celas) addClassCallback;
+  final Function addClassCallback;
 
-  const AddClassBottomSheet({super.key, required this.addClassCallback});
+  String username;
+
+   AddClassBottomSheet({super.key, required this.addClassCallback, required this.username});
 
   @override
   State<AddClassBottomSheet> createState() => _AddClassBottomSheetState();
@@ -273,8 +320,12 @@ class _AddClassBottomSheetState extends State<AddClassBottomSheet> {
           ),
           ElevatedButton(
             onPressed: () {
-              final celas = Celas();
-              widget.addClassCallback(celas);
+              String teacher = TeacherController.text;
+              String course = CourseController.text;
+              setState(() {
+              checker2(widget.username, teacher, course);
+              widget.addClassCallback(widget.username);
+              });
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
@@ -295,6 +346,24 @@ class _AddClassBottomSheetState extends State<AddClassBottomSheet> {
       ),
     );
   }
+  void checker2(String username, String teacher, String course, ) async {
+    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+      serverSocket
+          .write('ADDCLASS~$username~$teacher~$course\u0000');
+      serverSocket.flush();
+      serverSocket.listen((socketResponse) {
+
+      });
+
+    });
+  }
 }
 
-class Celas {}
+class Courses {
+  String name;
+  String Credit;
+  String NumberOfAssignment;
+  String NumberOfStudents;
+
+  Courses(this.name, this.Credit, this.NumberOfAssignment, this.NumberOfStudents);
+}
