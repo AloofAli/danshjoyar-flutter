@@ -160,7 +160,7 @@ class _karaState extends State<kara> {
 
   Future<List<Task>> fetchTasks(String username) async {
     List<Task> tasks = [];
-    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
       serverSocket.write('SHOWTASKS~$username\u0000');
       serverSocket.flush();
       serverSocket.listen((socketResponse) {
@@ -176,7 +176,7 @@ class _karaState extends State<kara> {
   }
 
   Future<void> removetask(String username, String name) async {
-    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
       serverSocket.write('DELETETASK~$username~$name\u0000');
     });
     setState(() {
@@ -376,7 +376,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
   }
 
   Future<void> addtask(String username, Task task, Function function) async {
-    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
       serverSocket.write(
           'ADDTASK~${username}~${task.name}~${task.dateTime}~${task.description}\u0000');
       serverSocket.flush();
