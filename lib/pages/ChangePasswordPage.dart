@@ -210,7 +210,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     print(username);
     String currentPassword = username + "~" + password;
     String isCurrentPasswordCorrect = '';
-    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket
           .write('CURRENTPASSWORD~$currentPassword\u0000');
       serverSocket.flush();
@@ -238,7 +238,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   void changePassword(String password) async {
     print(username);
     String newPassword = username + "~" + password;
-    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket.write('CHANGEPASSWORD~$newPassword\u0000');
       serverSocket.flush();
     });

@@ -18,7 +18,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _passwordVisible = false;
   bool _isValid = false;
   String _errorMessage = '';
-  bool userCanSignUp = false ;
+  bool userCanSignUp = false;
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -125,30 +125,27 @@ class _SignUpPageState extends State<SignUpPage> {
                 backgroundColor: Colors.black12,
               ),
               onPressed: () async {
-                    setState(() {
-                    _isValid = _validatePassword(passwordController.text);
-                  });
-                    String username = usernameController.text;
-                    String studentID = studentIDController.text;
-                    String password = passwordController.text;
+                setState(() {
+                  _isValid = _validatePassword(passwordController.text);
+                });
+                String username = usernameController.text;
+                String studentID = studentIDController.text;
+                String password = passwordController.text;
 
-                    await signupChecker(username, studentID, password);
+                await signupChecker(username, studentID, password);
 
-                    if (userCanSignUp)
-                    {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  mainPageHandler(
-                                      username: usernameController.text,
-                                      password: passwordController.text)));
-                    }
+                if (userCanSignUp) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => mainPageHandler(
+                              username: usernameController.text,
+                              password: passwordController.text)));
+                }
 
-                    if (!userCanSignUp)
-                    {
-
-                    }
+                if (!userCanSignUp) {
+                  error_username_signup();
+                }
               },
               child: const Text('Register',
                   style: TextStyle(
@@ -203,7 +200,9 @@ class _SignUpPageState extends State<SignUpPage> {
     if (!password.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
       _errorMessage += '• Special character is missing.\n';
     }
-    error();
+    if (_errorMessage.isNotEmpty) {
+      error();
+    }
     // If there are no error messages, the password is valid
     return _errorMessage.isEmpty;
   }
@@ -216,7 +215,7 @@ class _SignUpPageState extends State<SignUpPage> {
       type: ToastificationType.error,
       style: ToastificationStyle.flat,
       autoCloseDuration: const Duration(seconds: 5),
-      title: const Text("Invalid Password"),
+      title: const Text("Invalid password"),
       description: Text(_errorMessage),
       alignment: Alignment.topCenter,
       animationDuration: const Duration(milliseconds: 300),
@@ -245,12 +244,46 @@ class _SignUpPageState extends State<SignUpPage> {
 
 //-----------------------------------------------------------------------------
 
-  Future<String> signupChecker(String username ,String studentID ,String password) async {
+  void error_username_signup() {
+    toastification.show(
+      context: context,
+      type: ToastificationType.error,
+      style: ToastificationStyle.flat,
+      autoCloseDuration: const Duration(seconds: 5),
+      title: const Text("The StudentID or Username is already signed up !!!!!"),
+      alignment: Alignment.topCenter,
+      animationDuration: const Duration(milliseconds: 300),
+      animationBuilder: (context, animation, alignment, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      icon: const Icon(Icons.error),
+      primaryColor: Colors.red,
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      borderRadius: BorderRadius.circular(15),
+      showProgressBar: true,
+      closeButtonShowType: CloseButtonShowType.always,
+      closeOnClick: true,
+      pauseOnHover: true,
+      dragToClose: true,
+      applyBlurEffect: true,
+    );
+    ToastificationStyle;
+  }
+
+//-----------------------------------------------------------------------------
+
+  Future<String> signupChecker(
+      String username, String studentID, String password) async {
     String userData = username + "~" + studentID + "~" + password;
     String canUserSignUp = '';
-    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
-      serverSocket
-          .write('SIGNUP~$userData\u0000');
+    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+      serverSocket.write('SIGNUP~$userData\u0000');
       serverSocket.flush();
       serverSocket.listen((socketResponse) {
         print(socketResponse);

@@ -23,6 +23,7 @@ class mainPageHandler extends StatelessWidget {
           bottomNavigationBar: TabBar(
             labelColor: Colors.cyan,
             indicatorColor: Colors.cyanAccent,
+
             tabs: [
               Tab(icon: Icon(CupertinoIcons.home)),
               Tab(icon: Icon(Icons.task_outlined)),

@@ -116,11 +116,14 @@ class _LoginPageState extends State<LoginPage> {
                 String password = passwordController.text;
                 await loginChecker(username, password);
                 if (userCanLogin) {
+                  setState(() {
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) =>
                           mainPageHandler(
                               username: username, password: password)));
+                  });
                 }
                 else if (!userCanLogin) {
                   setState(() {
@@ -153,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<String> loginChecker(String username, String password) async {
     String userData = username + "~" + password;
     String userExist = '';
-    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket
           .write('LOGIN~$userData\u0000');
       serverSocket.flush();

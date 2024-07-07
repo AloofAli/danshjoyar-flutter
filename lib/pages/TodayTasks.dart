@@ -90,9 +90,10 @@ class _tamrinaState extends State<tamrina> {
                         trailing: IconButton(
                           icon: const Icon(Icons.upload),
                           onPressed: () {
+                            setState(() {
                             showModalBottomSheet(context: context,
-                                builder: (context) => UploadAssignment(
-                              uploadCallback: _assignments[index].changeColor));
+                                builder: (context) => UploadAssignment());
+                            });
                           },
                         ),
                       ),
@@ -108,7 +109,7 @@ class _tamrinaState extends State<tamrina> {
   }
   Future<List<Assignment>> checker(String username ) async {
     List<Assignment> Assignments=[];
-    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket
           .write('ASSIGNMENTS~$username\u0000');
       serverSocket.flush();
@@ -136,7 +137,7 @@ setState(() {
 class UploadAssignment extends StatefulWidget {
   late Function uploadCallback;
 
-   UploadAssignment({super.key, required this.uploadCallback});
+   UploadAssignment({super.key});
 
   @override
   State<UploadAssignment> createState() => _UploadAssignmentState();
@@ -201,9 +202,6 @@ class _UploadAssignmentState extends State<UploadAssignment> {
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
-              setState(() {
-              widget.uploadCallback();
-              });
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
@@ -229,12 +227,8 @@ class Assignment {
   String name;
   String dateTime;
   String description;
-  Color color = Colors.redAccent.shade100;
+  Color color = Colors.purple.shade100;
   File? file;
   Assignment(this.name, this.dateTime, this.description);
 
-  void changeColor() {
-
-    color = (color == Colors.redAccent.shade100) ? Colors.green.shade200 : Colors.redAccent.shade100;
-  }
 }

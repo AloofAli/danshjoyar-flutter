@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:danshjoyar/pages/EditAccount.dart';
 import 'package:danshjoyar/pages/Signup%20page.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -257,7 +256,7 @@ class _profileScreenState extends State<profileScreen> {
 
   Future<String> deleteAccount() async {
     String un = username;
-    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket.write('DELETEACCOUNT~$un\u0000');
       serverSocket.flush();
     });
@@ -266,7 +265,7 @@ class _profileScreenState extends State<profileScreen> {
 
   void initDatas() async {
     String userData = username;
-    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket.write('PROFILE~$userData\u0000');
       serverSocket.flush();
       serverSocket.listen((socketResponse) {

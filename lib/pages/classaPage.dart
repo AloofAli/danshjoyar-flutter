@@ -69,14 +69,18 @@ class _classaState extends State<classa> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    setState(() {
+
                     showModalBottomSheet(
                       context: context,
+
                       builder: (context) => AddClassBottomSheet(
                         username: username,
                         addClassCallback: _loadClasses,
                       ),
                       isScrollControlled: true,
                     );
+                    });
                   },
                   child: const Row(
                     children: [
@@ -211,7 +215,7 @@ class _classaState extends State<classa> {
 
     Future<List<Courses>> checker(String username ) async {
       List<Courses> course=[];
-      await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+      await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
         serverSocket
             .write('SHOWCLASS~$username\u0000');
         serverSocket.flush();
@@ -347,7 +351,7 @@ class _AddClassBottomSheetState extends State<AddClassBottomSheet> {
     );
   }
   void checker2(String username, String teacher, String course, ) async {
-    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket
           .write('ADDCLASS~$username~$teacher~$course\u0000');
       serverSocket.flush();
