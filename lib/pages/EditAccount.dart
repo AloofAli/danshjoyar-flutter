@@ -1,4 +1,6 @@
-import 'package:danshjoyar/pages/passwordpage.dart';
+import 'dart:io';
+
+import 'package:danshjoyar/pages/ChangePasswordPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:danshjoyar/Main/BeheshtiUniversityField.dart';
@@ -21,11 +23,11 @@ class _EditAccountState extends State<EditAccount> {
   final String username;
   final String password;
   BeheshtiUniversityField? _selectedField;
-
   _EditAccountState(this.username, this.password);
 
   @override
   Widget build(BuildContext context) {
+  print(username + "---------------" + password);
     DateTime selectedDate =DateTime.now();
     // Todo: change all number with These two
     final width = MediaQuery.of(context).size.width;
@@ -54,43 +56,8 @@ class _EditAccountState extends State<EditAccount> {
           child: ListView(
 
             children: [
-              TextFormField(
-                style: TextStyle(fontSize:20 ,color: Colors.white70),
 
-                decoration: InputDecoration(
-                  labelText: '$username',
-                  labelStyle: const TextStyle(fontSize: 18, color: Colors.white),
-                  prefixStyle: const TextStyle(fontSize: 18, color: Colors.white),
-
-                  enabled: false,
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                style: TextStyle(fontSize:20 ,color: Colors.white70),
-
-                decoration: const InputDecoration(
-                  labelText: 'Student ID',
-                  labelStyle: TextStyle(fontSize: 18, color: Colors.white),
-                  prefixStyle: TextStyle(fontSize: 18, color: Colors.white),
-
-                  enabled: false,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-        GestureDetector(
+            GestureDetector(
           onTap: () async {
             DateTime? pickedDate = await showDatePicker(
               context: context,
@@ -210,7 +177,7 @@ class _EditAccountState extends State<EditAccount> {
               const SizedBox(height: 15),
               ElevatedButton(
                 onPressed: () {
-                  // Handle Save Changes button press
+                  editAccount();
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.blue, backgroundColor: Colors.white, // Text color
@@ -230,7 +197,7 @@ class _EditAccountState extends State<EditAccount> {
                   // Navigate to ChangePasswordPage
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ChangePasswordPage()),
+                    MaterialPageRoute(builder: (context) => ChangePasswordPage(username: username)),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -256,6 +223,14 @@ class _EditAccountState extends State<EditAccount> {
     );
 
 
+  }
+
+  void editAccount() async {
+    String userData = username + "~" + _birthdayController.text + "~" + _fatherController.text + "~" + _nationalIDController.text + "~" + _phoneController.text + "~" + _selectedField.toString();
+    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+      serverSocket.write('EDITACCOUNT~$userData\u0000');
+      serverSocket.flush();
+    });
   }
 }
 

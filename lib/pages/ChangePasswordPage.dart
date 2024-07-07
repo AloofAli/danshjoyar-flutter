@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 
 class ChangePasswordPage extends StatefulWidget {
-  const ChangePasswordPage({Key? key}) : super(key: key);
+  final String username ;
+  ChangePasswordPage({required this.username});
 
   @override
-  _ChangePasswordPageState createState() => _ChangePasswordPageState();
+  _ChangePasswordPageState createState() => _ChangePasswordPageState(username);
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
@@ -13,7 +16,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmNewPasswordController = TextEditingController();
   bool _isValid = false;
+  late bool currentPasswordIsCorrect ;
   String errorMessage = '';
+  final String username ;
+  _ChangePasswordPageState(this.username);
+
 
   @override
   Widget build(BuildContext context) {
@@ -91,12 +98,23 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   foregroundColor: Colors.blue,
 
                 ),
-                onPressed: () {
+                onPressed: () async {
                   setState(() {
                     _isValid = validatePassword(_newPasswordController.text);
                   });
+                  
+                  currentPasswordChecker(_currentPasswordController.text);
+                  if (!currentPasswordIsCorrect)
+                    {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Current password is incorrect'),
+                        ),
+                      );
+                    }
                   if (_newPasswordController.text ==
                       _confirmNewPasswordController.text) {
+                    changePassword(_newPasswordController.text);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Password changed successfully!'),
@@ -186,5 +204,43 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       applyBlurEffect: true,
     );
     ToastificationStyle;
+  }
+
+  Future<String> currentPasswordChecker(String password) async {
+    print(username);
+    String currentPassword = username + "~" + password;
+    String isCurrentPasswordCorrect = '';
+    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+      serverSocket
+          .write('CURRENTPASSWORD~$currentPassword\u0000');
+      serverSocket.flush();
+      serverSocket.listen((socketResponse) {
+        print(socketResponse);
+        setState(() {
+          print(socketResponse);
+          isCurrentPasswordCorrect = String.fromCharCodes(socketResponse);
+          print(isCurrentPasswordCorrect);
+          if (isCurrentPasswordCorrect == "true") {
+            setState(() {
+              currentPasswordIsCorrect = true;
+            });
+          } else if (isCurrentPasswordCorrect == "true") {
+              setState(() {
+                currentPasswordIsCorrect = false;
+              });
+            }
+        });
+      });
+    });
+    return isCurrentPasswordCorrect;
+  }
+
+  void changePassword(String password) async {
+    print(username);
+    String newPassword = username + "~" + password;
+    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+      serverSocket.write('CHANGEPASSWORD~$newPassword\u0000');
+      serverSocket.flush();
+    });
   }
 }

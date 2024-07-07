@@ -15,7 +15,8 @@ class mainPageHandler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    print(username + "+++++++++++++++" + password);
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
         length: 5,
@@ -32,7 +33,7 @@ class mainPageHandler extends StatelessWidget {
             ],
           ),
           body: TabBarView(
-            children: [sara(), kara(), classa(), khabara(), tamrina()],
+            children: [sara(username: username, password: password), kara(), classa(), khabara(), tamrina()],
           ),
         ),
       ),

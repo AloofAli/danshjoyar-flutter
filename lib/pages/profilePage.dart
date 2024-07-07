@@ -25,12 +25,18 @@ File? _image;
 class _profileScreenState extends State<profileScreen> {
   final String username;
   final String password;
+  String studentID = '';
+  String totalAverage = '';
+  String currentTerm = '';
+  String currentTermCredit = '';
+  String totalPassedCredit = '';
 
   _profileScreenState(this.username, this.password);
 
   @override
   void initState() {
     super.initState();
+    initDatas();
   }
 
   @override
@@ -119,11 +125,11 @@ class _profileScreenState extends State<profileScreen> {
                                 child: Table(
                                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                                   children: [
-                                    _buildTableRow("StudentID", "0441281850"),
-                                    _buildTableRow("Total Average", "18.5"),
-                                    _buildTableRow("Current Term", "2"),
-                                    _buildTableRow("Current Term Credit", "18"),
-                                    _buildTableRow("Total Passed Credit", "31"),
+                                    _buildTableRow("StudentID", studentID),
+                                    _buildTableRow("Total Average", totalAverage),
+                                    _buildTableRow("Current Term", currentTerm),
+                                    _buildTableRow("Current Term Credit", currentTermCredit),
+                                    _buildTableRow("Total Passed Credit", totalPassedCredit),
                                   ],
                                 ),
                               ),
@@ -191,17 +197,21 @@ class _profileScreenState extends State<profileScreen> {
                                 content: const Text('"Warning: This button permanently deletes your account and all associated data. Proceed with caution, as this action cannot be undone."'),
                                 actions: <Widget>[
                                   TextButton(
-                                    onPressed: () => Navigator.pop(context, 'Cancel'),
                                     child: const Text('No'),
+                                    onPressed: () => Navigator.pop(context, 'Cancel'),
                                   ),
                                   TextButton(
                                     child: const Text('Yes'),
-                                    onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const SignUpPage(),
-                                      ),
-                                    ),
+                                    onPressed: () async {
+                                      await deleteAccount();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (
+                                              context) => const SignUpPage(),
+                                        ),
+                                      );
+                                    }
                                   ),
                                 ],
                               ),
@@ -244,7 +254,41 @@ class _profileScreenState extends State<profileScreen> {
       }
     });
   }
+
+  Future<String> deleteAccount() async {
+    String un = username;
+    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+      serverSocket.write('DELETEACCOUNT~$un\u0000');
+      serverSocket.flush();
+    });
+    return ""; //this method doesn't need return type , the return type is just for handling compile error
+  }
+
+  void initDatas() async {
+    String userData = username;
+    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+      serverSocket.write('PROFILE~$userData\u0000');
+      serverSocket.flush();
+      serverSocket.listen((socketResponse) {
+        setState(() {
+          var splited = String.fromCharCodes(socketResponse).split("-");
+          studentID = splited.elementAt(0);
+          totalAverage = splited.elementAt(1);
+          currentTerm = splited.elementAt(2);
+          currentTermCredit = splited.elementAt(3);
+          totalPassedCredit = splited.elementAt(4);
+          print(studentID);
+          print(totalAverage);
+          print(currentTerm);
+          print(currentTermCredit);
+          print(totalPassedCredit);
+        });
+    });
+
+  });
 }
+}
+
 
 TableRow _buildTableRow(String label, String value) {
   return TableRow(
