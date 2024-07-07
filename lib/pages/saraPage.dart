@@ -202,7 +202,7 @@ class _saraState extends State<sara> {
                       children: [
                         _buildSummaryBox(
                           icon: Icon(Icons.restore_from_trash_outlined),
-                          text: " Worst Score: ${_detail[2]}",
+                          text: "Worst Score:${_detail[2]}",
                         ),
                         _buildSummaryBox(
                           icon: Icon(Icons.done_outlined),

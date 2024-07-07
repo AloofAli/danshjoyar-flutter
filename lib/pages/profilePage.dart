@@ -200,17 +200,17 @@ class _profileScreenState extends State<profileScreen> {
                                     onPressed: () => Navigator.pop(context, 'Cancel'),
                                   ),
                                   TextButton(
-                                    child: const Text('Yes'),
-                                    onPressed: () async {
-                                      await deleteAccount();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (
-                                              context) => const SignUpPage(),
-                                        ),
-                                      );
-                                    }
+                                      child: const Text('Yes'),
+                                      onPressed: () async {
+                                        await deleteAccount();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (
+                                                context) => const SignUpPage(),
+                                          ),
+                                        );
+                                      }
                                   ),
                                 ],
                               ),
@@ -282,10 +282,10 @@ class _profileScreenState extends State<profileScreen> {
           print(currentTermCredit);
           print(totalPassedCredit);
         });
-    });
+      });
 
-  });
-}
+    });
+  }
 }
 
 

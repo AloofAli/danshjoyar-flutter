@@ -2,6 +2,7 @@ import 'package:danshjoyar/mainPageHandler.dart';
 import 'package:danshjoyar/pages/profilePage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:toastification/toastification.dart';
@@ -28,37 +29,27 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery
-        .of(context)
-        .size
-        .width;
-    final height = MediaQuery
-        .of(context)
-        .size
-        .height;
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                  "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
-              fit: BoxFit.cover,
-              filterQuality: FilterQuality.high,
-            )),
+          image: DecorationImage(
+            image: AssetImage(
+                "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg"),
+            fit: BoxFit.cover,
+            filterQuality: FilterQuality.high,
+          ),
+        ),
         padding: EdgeInsets.fromLTRB(height / 25, height / 25, height / 25, 0),
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Image.asset(
               "lib/asset/images/Sbu-logo.svg.png",
-              scale: MediaQuery
-                  .of(context)
-                  .size
-                  .width / 60,
+              scale: MediaQuery.of(context).size.width / 60,
               filterQuality: FilterQuality.high,
             ),
-
             TextField(
               controller: usernameController,
               cursorColor: Colors.cyan,
@@ -68,12 +59,10 @@ class _LoginPageState extends State<LoginPage> {
                 labelStyle: TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your username',
                 hintStyle: TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: Icon(Icons.account_circle_sharp,
-                  size: 35,),
+                icon: Icon(Icons.account_circle_sharp, size: 35,),
                 iconColor: Colors.white,
               ),
             ),
-            // const SizedBox(height: 44),
             TextFormField(
               keyboardType: TextInputType.text,
               controller: passwordController,
@@ -81,23 +70,17 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(fontSize: 20, color: Colors.white70),
               decoration: InputDecoration(
                 labelText: 'Password',
-                labelStyle:
-                const TextStyle(fontSize: 20.0, color: Colors.white),
+                labelStyle: const TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your password',
-                hintStyle:
-                const TextStyle(fontSize: 20.0, color: Colors.white70),
-                icon: const Icon(Icons.key,
-                  size: 35,),
+                hintStyle: const TextStyle(fontSize: 20.0, color: Colors.white70),
+                icon: const Icon(Icons.key, size: 35,),
                 iconColor: Colors.white,
-
                 suffixIcon: IconButton(
                   splashColor: Colors.white,
                   tooltip: "Change visibility",
                   icon: Icon(
                     _passwordVisible ? Icons.visibility_off : Icons.visibility,
-                    color: Theme
-                        .of(context)
-                        .dialogBackgroundColor,
+                    color: Theme.of(context).dialogBackgroundColor,
                   ),
                   onPressed: () {
                     setState(() {
@@ -109,26 +92,21 @@ class _LoginPageState extends State<LoginPage> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  shape: const StadiumBorder(),
-                  backgroundColor: Colors.black12),
+                shape: const StadiumBorder(),
+                backgroundColor: Colors.black12,
+              ),
               onPressed: () async {
                 String username = usernameController.text;
                 String password = passwordController.text;
-                await loginChecker(username, password);
-                if (userCanLogin) {
-                  setState(() {
-
+                bool canLogin = await loginChecker(username, password);
+                if (canLogin) {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) =>
-                          mainPageHandler(
-                              username: username, password: password)));
-                  });
-                }
-                else if (!userCanLogin) {
-                  setState(() {
-                    error();
-                  });
+                    context,
+                    MaterialPageRoute(builder: (context) =>
+                        mainPageHandler(username: username, password: password)),
+                  );
+                } else {
+                  error();
                 }
               },
               child: const Text('Login',
@@ -147,35 +125,28 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     usernameController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
-  Future<String> loginChecker(String username, String password) async {
+  Future<bool> loginChecker(String username, String password) async {
     String userData = username + "~" + password;
-    String userExist = '';
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
-      serverSocket
-          .write('LOGIN~$userData\u0000');
+    Completer<bool> completer = Completer();
+    Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+      serverSocket.write('LOGIN~$userData\u0000');
       serverSocket.flush();
       serverSocket.listen((socketResponse) {
-        print(socketResponse);
-        setState(() {
-          print(socketResponse);
-          userExist = String.fromCharCodes(socketResponse);
-          print(userExist);
-          if (userExist == "true") {
-            setState(() {
-              userCanLogin = true;
-            });
-          }
-        });
+        String userExist = String.fromCharCodes(socketResponse).trim();
+        if (userExist == "true") {
+          completer.complete(true);
+        } else {
+          completer.complete(false);
+        }
+        serverSocket.destroy();
       });
     });
-
-    return userExist;
+    return completer.future;
   }
 
   void error() {
@@ -208,6 +179,5 @@ class _LoginPageState extends State<LoginPage> {
       dragToClose: true,
       applyBlurEffect: true,
     );
-    ToastificationStyle;
   }
 }

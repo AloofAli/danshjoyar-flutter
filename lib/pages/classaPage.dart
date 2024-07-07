@@ -21,13 +21,7 @@ class _classaState extends State<classa> {
     super.initState();
     _loadClasses(username);
   }
-  void addClass(Courses celas) {
-    setState(() {
-      _classes.add(celas);
-    });
-  }
   Future<void> _loadClasses(String username) async {
-
     List<Courses> classes = await checker(username);
     setState(() {
       print("$classes");
@@ -70,10 +64,8 @@ class _classaState extends State<classa> {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-
                     showModalBottomSheet(
                       context: context,
-
                       builder: (context) => AddClassBottomSheet(
                         username: username,
                         addClassCallback: _loadClasses,
@@ -350,7 +342,7 @@ class _AddClassBottomSheetState extends State<AddClassBottomSheet> {
       ),
     );
   }
-  void checker2(String username, String teacher, String course, ) async {
+  void checker2(String username, String teacher, String course ) async {
     await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket
           .write('ADDCLASS~$username~$teacher~$course\u0000');
@@ -358,7 +350,7 @@ class _AddClassBottomSheetState extends State<AddClassBottomSheet> {
       serverSocket.listen((socketResponse) {
 
       });
-
+      widget.addClassCallback(username);
     });
   }
 }

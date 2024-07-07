@@ -37,6 +37,8 @@ dependencies:
   url_launcher: ^6.3.0
   http: ^1.2.1
   curved_navigation_bar: ^1.0.6
+  path_provider: ^2.0.2
+  shared_preferences: ^2.0.6
 
   # The following adds the Cupertino Icons font to your application.
   # The following adds the Cupertino Icons font to your application.

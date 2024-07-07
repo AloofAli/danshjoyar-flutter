@@ -2,7 +2,7 @@ import 'package:danshjoyar/pages/classaPage.dart';
 import 'package:danshjoyar/pages/karaPage.dart';
 import 'package:danshjoyar/pages/khabaraPage.dart';
 import 'package:danshjoyar/pages/saraPage.dart';
-import 'package:danshjoyar/pages/TodayTasks.dart';
+import 'package:danshjoyar/pages/tamrina.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

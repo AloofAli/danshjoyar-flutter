@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:danshjoyar/mainPageHandler.dart';
@@ -11,8 +12,6 @@ class SignUpPage extends StatefulWidget {
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
-
-//-----------------------------------------------------------------------------
 
 class _SignUpPageState extends State<SignUpPage> {
   bool _passwordVisible = false;
@@ -39,11 +38,11 @@ class _SignUpPageState extends State<SignUpPage> {
       body: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
-          image: AssetImage(
-            "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg",
-          ),
-          fit: BoxFit.cover,
-        )),
+              image: AssetImage(
+                "lib/asset/images/alex-shutin-kKvQJ6rK6S4-unsplash.jpg",
+              ),
+              fit: BoxFit.cover,
+            )),
         padding: EdgeInsets.fromLTRB(height / 25, height / 25, height / 25, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -95,10 +94,10 @@ class _SignUpPageState extends State<SignUpPage> {
               decoration: InputDecoration(
                 labelText: 'Create Password',
                 labelStyle:
-                    const TextStyle(fontSize: 20.0, color: Colors.white),
+                const TextStyle(fontSize: 20.0, color: Colors.white),
                 hintText: 'Enter your password',
                 hintStyle:
-                    const TextStyle(fontSize: 20.0, color: Colors.white70),
+                const TextStyle(fontSize: 20.0, color: Colors.white70),
                 icon: Icon(
                   Icons.key,
                   size: 35,
@@ -128,23 +127,23 @@ class _SignUpPageState extends State<SignUpPage> {
                 setState(() {
                   _isValid = _validatePassword(passwordController.text);
                 });
-                String username = usernameController.text;
-                String studentID = studentIDController.text;
-                String password = passwordController.text;
+                if (_isValid) {
+                  String username = usernameController.text;
+                  String studentID = studentIDController.text;
+                  String password = passwordController.text;
 
-                await signupChecker(username, studentID, password);
+                  bool canSignUp = await signupChecker(username, studentID, password);
 
-                if (userCanSignUp) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => mainPageHandler(
-                              username: usernameController.text,
-                              password: passwordController.text)));
-                }
-
-                if (!userCanSignUp) {
-                  error_username_signup();
+                  if (canSignUp) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => mainPageHandler(
+                                username: usernameController.text,
+                                password: passwordController.text)));
+                  } else {
+                    error_username_signup();
+                  }
                 }
               },
               child: const Text('Register',
@@ -161,8 +160,6 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-//-----------------------------------------------------------------------------
-
   @override
   void dispose() {
     usernameController.dispose();
@@ -171,43 +168,29 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-//-----------------------------------------------------------------------------
-
   bool _validatePassword(String password) {
-    // Reset error message
     _errorMessage = '';
 
-    // Password length greater than 6
     if (password.length < 8) {
       _errorMessage += 'Password must be longer than 8 characters.\n';
     }
-    // Contains at least one uppercase letter
     if (!password.contains(RegExp(r'[A-Z]'))) {
       _errorMessage += '• Uppercase letter is missing.\n';
     }
-
-    // Contains at least one lowercase letter
     if (!password.contains(RegExp(r'[a-z]'))) {
       _errorMessage += '• Lowercase letter is missing.\n';
     }
-
-    // Contains at least one digit
     if (!password.contains(RegExp(r'[0-9]'))) {
       _errorMessage += '• Digit is missing.\n';
     }
-
-    // Contains at least one special character
     if (!password.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
       _errorMessage += '• Special character is missing.\n';
     }
     if (_errorMessage.isNotEmpty) {
       error();
     }
-    // If there are no error messages, the password is valid
     return _errorMessage.isEmpty;
   }
-
-//-----------------------------------------------------------------------------
 
   void error() {
     toastification.show(
@@ -242,15 +225,13 @@ class _SignUpPageState extends State<SignUpPage> {
     ToastificationStyle;
   }
 
-//-----------------------------------------------------------------------------
-
   void error_username_signup() {
     toastification.show(
       context: context,
       type: ToastificationType.error,
       style: ToastificationStyle.flat,
       autoCloseDuration: const Duration(seconds: 5),
-      title: const Text("The StudentID or Username is already signed up !!!!!"),
+      title: const Text("The StudentID or Username is already signed up!"),
       alignment: Alignment.topCenter,
       animationDuration: const Duration(milliseconds: 300),
       animationBuilder: (context, animation, alignment, child) {
@@ -276,30 +257,24 @@ class _SignUpPageState extends State<SignUpPage> {
     ToastificationStyle;
   }
 
-//-----------------------------------------------------------------------------
-
-  Future<String> signupChecker(
-      String username, String studentID, String password) async {
+  Future<bool> signupChecker(String username, String studentID, String password) async {
     String userData = username + "~" + studentID + "~" + password;
-    String canUserSignUp = '';
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+    Completer<bool> completer = Completer();
+    Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket.write('SIGNUP~$userData\u0000');
       serverSocket.flush();
       serverSocket.listen((socketResponse) {
-        print(socketResponse);
-        setState(() {
-          print(socketResponse);
-          canUserSignUp = String.fromCharCodes(socketResponse);
-          print(canUserSignUp);
-          if (canUserSignUp == "not repetitive") {
-            setState(() {
-              userCanSignUp = true;
-            });
-          }
-        });
+        String canUserSignUp = String.fromCharCodes(socketResponse).trim();
+        if (canUserSignUp == "not repetitive") {
+          completer.complete(true);
+        } else {
+          completer.complete(false);
+        }
+        serverSocket.destroy();
       });
+    }).catchError((error) {
+      completer.completeError(error);
     });
-
-    return canUserSignUp;
+    return completer.future;
   }
 }
