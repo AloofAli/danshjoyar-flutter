@@ -1,5 +1,5 @@
 import 'package:danshjoyar/pages/classaPage.dart';
-import 'package:danshjoyar/pages/karaPage.dart';
+import 'package:danshjoyar/pages/karapage.dart';
 import 'package:danshjoyar/pages/khabaraPage.dart';
 import 'package:danshjoyar/pages/saraPage.dart';
 import 'package:danshjoyar/pages/TodayTasks.dart';
@@ -15,7 +15,7 @@ class mainPageHandler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return  MaterialApp(
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
         length: 5,
@@ -32,7 +32,7 @@ class mainPageHandler extends StatelessWidget {
             ],
           ),
           body: TabBarView(
-            children: [sara(), kara(), classa(), khabara(), tamrina()],
+            children: [sara(username: username, password: password,),kara(username), classa( username: username,), khabara(), tamrina(username)],
           ),
         ),
       ),

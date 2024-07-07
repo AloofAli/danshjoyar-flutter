@@ -15,7 +15,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
-  bool userCanLogin = false;
+  late bool userCanLogin ;
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -114,15 +114,15 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () async {
                 String username = usernameController.text;
                 String password = passwordController.text;
-                await loginChecker(username, password);
-                if (userCanLogin) {
+                 loginChecker(username, password);
+                if ( userCanLogin) {
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) =>
                           mainPageHandler(
                               username: username, password: password)));
                 }
-                else if (!userCanLogin) {
+                else if ( !userCanLogin) {
                   setState(() {
                     error();
                   });
@@ -163,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
     //     userExist = String.fromCharCodes(socketResponse);
     //   });
     // });
-    await Socket.connect("172.20.109.79", 7777).then((serverSocket) {
+    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
       serverSocket
           .write('LOGIN~$userData\u0000');
       serverSocket.flush();

@@ -125,9 +125,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 backgroundColor: Colors.black12,
               ),
               onPressed: () async {
-                    setState(() {
                     _isValid = _validatePassword(passwordController.text);
-                  });
                     String username = usernameController.text;
                     String studentID = studentIDController.text;
                     String password = passwordController.text;
@@ -248,7 +246,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<String> signupChecker(String username ,String studentID ,String password) async {
     String userData = username + "~" + studentID + "~" + password;
     String canUserSignUp = '';
-    await Socket.connect("172.20.109.79", 7777).then((serverSocket) {
+    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
       serverSocket
           .write('SIGNUP~$userData\u0000');
       serverSocket.flush();

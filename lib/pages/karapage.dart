@@ -1,19 +1,35 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class kara extends StatefulWidget {
-  const kara({super.key});
+  String username;
+
+  kara(this.username, {super.key});
 
   @override
-  State<kara> createState() => _karaState();
+  State<kara> createState() => _karaState(username);
 }
 
 class _karaState extends State<kara> {
-  List<Task> allTasks = [Task("1", "2024/12/12", "test")];
+  List<Task> allTasks = [];
   List<Task> doneTasks = [];
 
-  void addTask(Task task) {
+  String username;
+
+  _karaState(this.username);
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTasks(username);
+  }
+
+  Future<void> _loadTasks(String username) async {
+    List<Task> tasks = await fetchTasks(username);
     setState(() {
-      allTasks.add(task);
+      allTasks = tasks;
+      print("tasks =$tasks");
     });
   }
 
@@ -33,7 +49,8 @@ class _karaState extends State<kara> {
                     "lib/asset/images/casey-horner-4rDCa5hBlCs-unsplash.jpg",
                   ),
                   fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(Colors.black26, BlendMode.darken),
+                  colorFilter:
+                  ColorFilter.mode(Colors.black26, BlendMode.darken),
                 ),
               ),
               padding: EdgeInsets.fromLTRB(
@@ -66,7 +83,8 @@ class _karaState extends State<kara> {
                                 onPressed: () {
                                   setState(() {
                                     doneTasks.add(allTasks[index]);
-                                    allTasks.removeAt(index);
+                                    allTasks.remove(index);
+                                    removetask(username, allTasks[index].name);
                                   });
                                 }),
                             title: Text(
@@ -79,7 +97,8 @@ class _karaState extends State<kara> {
                                 .split(" ")
                                 .first),
                             trailing: IconButton(
-                              icon: const Icon(Icons.arrow_forward_ios_outlined),
+                              icon:
+                              const Icon(Icons.arrow_forward_ios_outlined),
                               onPressed: () {
                                 setState(() {
                                   //TODO
@@ -108,9 +127,9 @@ class _karaState extends State<kara> {
                         return Card(
                           color: Colors.white.withOpacity(0.5),
                           child: ListTile(
-                            leading:  Icon(Icons.done),
+                            leading: Icon(Icons.done),
                             title: Text(doneTasks[index].name,
-                                style:  TextStyle(fontSize: 18)),
+                                style: TextStyle(fontSize: 18)),
                           ),
                         );
                       },
@@ -127,9 +146,7 @@ class _karaState extends State<kara> {
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
-            builder: (context) => TaskBottomSheet(
-              addTaskCallback: addTask,
-            ),
+            builder: (context) => TaskBottomSheet(username,_loadTasks),
           );
         },
         child: const Icon(
@@ -140,12 +157,42 @@ class _karaState extends State<kara> {
       ),
     );
   }
+
+  Future<List<Task>> fetchTasks(String username) async {
+    List<Task> tasks = [];
+    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+      serverSocket.write('SHOWTASKS~$username\u0000');
+      serverSocket.flush();
+      serverSocket.listen((socketResponse) {
+        String result = String.fromCharCodes(socketResponse);
+        List<String> spilitedBYline = result.split("\n");
+        for (int i = 0; i < spilitedBYline.length; i++) {
+          List<String> line = spilitedBYline.elementAt(i).split("~");
+          tasks.add(Task(line.first, line.elementAt(1), line.elementAt(2)));
+        }
+      });
+    });
+    return tasks;
+  }
+
+  Future<void> removetask(String username, String name) async {
+    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+      serverSocket.write('DELETETASK~$username~$name\u0000');
+    });
+    setState(() {
+
+      _loadTasks(username);
+    });
+  }
+
 }
 
 class TaskBottomSheet extends StatefulWidget {
-  final Function(Task) addTaskCallback;
+  String username;
 
-  const TaskBottomSheet({super.key, required this.addTaskCallback});
+  Function function;
+
+  TaskBottomSheet(this.username, this.function,{super.key});
 
   @override
   _TaskBottomSheetState createState() => _TaskBottomSheetState();
@@ -233,7 +280,8 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
               if (pickedDate != null) {
                 setState(() {
                   selectedDate = pickedDate;
-                  _dateController.text = "${pickedDate.toLocal()}".split(' ')[0];
+                  _dateController.text =
+                  "${pickedDate.toLocal()}".split(' ')[0];
                 });
               }
             },
@@ -305,7 +353,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                 "${_dateController.text} ${_timeController.text}",
                 _descriptionController.text,
               );
-              widget.addTaskCallback(task);
+              addtask(widget.username, task ,widget.function);
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
@@ -314,23 +362,38 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
               ),
               padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
             ),
-
             child: const Text(
               'Add Task',
               style: TextStyle(fontSize: 18),
             ),
           ),
-          const SizedBox(height: 24,)
+          const SizedBox(
+            height: 24,
+          )
         ],
       ),
     );
   }
+
+  Future<void> addtask(String username, Task task, Function function) async {
+    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+      serverSocket.write(
+          'ADDTASK~${username}~${task.name}~${task.dateTime}~${task.description}\u0000');
+      serverSocket.flush();
+      serverSocket.listen((socketResponse) {});
+    });
+    setState(() {
+
+      function(username);
+    });
+  }
+
 }
 
 class Task {
-  String name;
-  String dateTime;
-  String description;
+  String name="";
+  String dateTime="";
+  String description="";
 
   Task(this.name, this.dateTime, this.description);
 }
