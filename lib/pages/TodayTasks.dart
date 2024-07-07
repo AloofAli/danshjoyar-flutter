@@ -4,18 +4,32 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 class tamrina extends StatefulWidget {
-  const tamrina({super.key});
+
+   tamrina(this.username, {super.key});
+  String username;
 
   @override
-  State<tamrina> createState() => _tamrinaState();
+  State<tamrina> createState() => _tamrinaState(username);
 }
 
 class _tamrinaState extends State<tamrina> {
-  final List<Assignment> _assignments = List.generate(
-    6,
-        (index) => Assignment("Assignment $index", "2024/12/12", "Description $index"),
-  );
+   _tamrinaState(this.username);
+   late List<Assignment> _assignments=[];
+   String username;
+   @override
+   void initState() {
+     super.initState();
+     _loadAssignments(username);
+   }
 
+   Future<void> _loadAssignments(String username) async {
+
+     List<Assignment> assignments = await checker(username);
+     setState(() {
+       print("assignmrnt : $assignments");
+       _assignments = assignments;
+     });
+   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,6 +106,29 @@ class _tamrinaState extends State<tamrina> {
       ),
     );
   }
+  Future<List<Assignment>> checker(String username ) async {
+    List<Assignment> Assignments=[];
+    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+      serverSocket
+          .write('ASSIGNMENTS~$username\u0000');
+      serverSocket.flush();
+      serverSocket.listen((socketResponse) {
+setState(() {
+
+       String result=String.fromCharCodes(socketResponse);
+            List spilited=result.split('~');
+            for(int i=0;i<spilited.length;i=i+3){
+              print(spilited[i]+ spilited[i+1]+spilited[i+2]);
+              Assignments.add(Assignment(spilited[i], spilited[i+1],spilited[i+2]));
+            }
+      });
+});
+
+    });
+
+    return Assignments;
+  }
+
 }
 
 

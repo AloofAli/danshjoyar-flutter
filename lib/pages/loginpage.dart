@@ -153,7 +153,17 @@ class _LoginPageState extends State<LoginPage> {
   Future<String> loginChecker(String username, String password) async {
     String userData = username + "~" + password;
     String userExist = '';
-    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+    // var socket = await Socket.connect("172.20.109.42", 7777).then()(
+    //
+    // );
+    // socket.write(userData+"\u0000");
+    // socket.flush();
+    // socket.listen((socketResponse) {
+    //   setState(() {
+    //     userExist = String.fromCharCodes(socketResponse);
+    //   });
+    // });
+    await Socket.connect("172.20.109.79", 7777).then((serverSocket) {
       serverSocket
           .write('LOGIN~$userData\u0000');
       serverSocket.flush();

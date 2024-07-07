@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:danshjoyar/pages/EditAccount.dart';
 import 'package:danshjoyar/pages/profilePage.dart';
 import 'package:flutter/material.dart';
@@ -6,19 +8,73 @@ import 'package:url_launcher/url_launcher.dart';
 class sara extends StatefulWidget {
   final String username;
   final String password;
+
   sara({required this.username, required this.password});
 
   @override
-  State<sara> createState() => _SaraState(username, password);
+  State<sara> createState() => _saraState(username, password);
 }
 
-class _SaraState extends State<sara> {
-  List<Task> tasks = List<Task>.generate(
-      10, (index) => Task('Task ${index + 1}', DateTime.now()));
+class _saraState extends State<sara> {
+  List<Task> allTasks = [];
   List<Task> doneTasks = [];
+  List<String> _detail = ["", "", "", "", ""];
+
+  @override
+  void initState() {
+    super.initState();
+    _loaddetail(widget.username);
+    _loadTasks(username);
+  }
+
+  Future<void> _loadTasks(String username) async {
+    List<Task> tasks = await fetchTasks(username);
+    setState(() {
+      allTasks = tasks;
+      print("tasks =$tasks");
+    });
+  }
+
+  Future<void> removetask(String username, String name) async {
+    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+      serverSocket.write('DELETETASK~$username~$name\u0000');
+    });
+    setState(() {
+      _loadTasks(username);
+    });
+  }
+
+  Future<void> _loaddetail(String username) async {
+    List<String> details = await checker(username);
+    print("Details fetched: $details");
+    if (details.isNotEmpty) {
+      setState(() {
+        _detail = details;
+      });
+    }
+  }
+
+  Future<List<Task>> fetchTasks(String username) async {
+    List<Task> tasks = [];
+    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+      serverSocket.write('SHOWTASKS~$username\u0000');
+      serverSocket.flush();
+      serverSocket.listen((socketResponse) {
+        String result = String.fromCharCodes(socketResponse);
+        List<String> spilitedBYline = result.split("\n");
+        for (int i = 0; i < spilitedBYline.length; i++) {
+          List<String> line = spilitedBYline.elementAt(i).split("~");
+          tasks.add(Task(line.first, line.elementAt(1), line.elementAt(2)));
+        }
+      });
+    });
+    return tasks;
+  }
+
   final String username;
   final String password;
-  _SaraState(this.username, this.password);
+
+  _saraState(this.username, this.password);
 
   @override
   Widget build(BuildContext context) {
@@ -30,45 +86,37 @@ class _SaraState extends State<sara> {
           backgroundColor: Colors.transparent,
           actions: [
             PopupMenuButton<int>(
-               iconColor: Colors.white,
+              iconColor: Colors.white,
               itemBuilder: (context) => [
-
                 PopupMenuItem(
-
                   value: 3,
                   child: Row(
                     children: [
                       Icon(Icons.laptop_windows_sharp),
-                      SizedBox(
-                        width: 10,
-                      ),
+                      SizedBox(width: 10),
                       Text("Backend Github")
                     ],
                   ),
                 ),
                 PopupMenuItem(
-
                   value: 4,
                   child: Row(
                     children: [
                       Icon(Icons.laptop_windows_sharp),
-
-                      SizedBox(
-                        width: 10,
-                      ),
+                      SizedBox(width: 10),
                       Text("Frontend Github")
                     ],
                   ),
                 ),
-               ],
+              ],
               color: Colors.white,
               onSelected: (value) {
-
                 if (value == 3) {
-                  _launchURL(Uri.parse('https://github.com/Aminxh/danshjooyar_back'));
-                }
-                else if (value == 4) {
-                   _launchURL(Uri.parse('https://github.com/AloofAli/danshjoyar-flutter'));
+                  _launchURL(
+                      Uri.parse('https://github.com/Aminxh/danshjooyar_back'));
+                } else if (value == 4) {
+                  _launchURL(Uri.parse(
+                      'https://github.com/AloofAli/danshjoyar-flutter'));
                 }
               },
             ),
@@ -83,8 +131,8 @@ class _SaraState extends State<sara> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => profileScreen(username: username,password: password)
-                  ),
+                      builder: (context) => profileScreen(
+                          username: username, password: password)),
                 );
               },
             ),
@@ -108,9 +156,9 @@ class _SaraState extends State<sara> {
                   ),
                 ),
                 padding: EdgeInsets.fromLTRB(
-                  MediaQuery.of(context).size.height / 25,
+                  MediaQuery.of(context).size.height / 50,
                   MediaQuery.of(context).size.height / 10,
-                  MediaQuery.of(context).size.height / 25,
+                  MediaQuery.of(context).size.height / 50,
                   MediaQuery.of(context).size.height / 25,
                 ),
                 child: Column(
@@ -130,15 +178,21 @@ class _SaraState extends State<sara> {
                       children: [
                         _buildSummaryBox(
                             icon: Icon(Icons.school),
-                            text: " Exam:",
+                            text: "Exam:${_detail[0]}",
                             width: 110),
+                        SizedBox(
+                          width: 10,
+                        ),
                         _buildSummaryBox(
                             icon: Icon(Icons.task),
-                            text: " DeadLine:",
-                            width: 100),
+                            text: "Deadlines:${_detail[3]}",
+                            width: 120),
+                        SizedBox(
+                          width: 10,
+                        ),
                         _buildSummaryBox(
                             icon: Icon(Icons.star),
-                            text: " Best Score:",
+                            text: "Best Score:${_detail[1]}",
                             width: 110),
                       ],
                     ),
@@ -148,79 +202,92 @@ class _SaraState extends State<sara> {
                       children: [
                         _buildSummaryBox(
                           icon: Icon(Icons.restore_from_trash_outlined),
-                          text: " Worst Score:",
+                          text: " Worst Score: ${_detail[2]}",
                         ),
                         _buildSummaryBox(
                           icon: Icon(Icons.done_outlined),
-                          text: "Done:",
+                          text: " Done: ${_detail[4]}",
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
-                    Text(
-                      'Current Tasks:',
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Container(
-                      height: 200,
-                      child: ListView.builder(
-                        itemCount: tasks.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            color: Colors.white.withOpacity(0.8),
-                            child: ListTile(
-                              leading: Icon(Icons.task_outlined),
-                              title: Text(tasks[index].name,
-                                  style: TextStyle(fontSize: 18)),
-                              subtitle: Text(tasks[index]
-                                  .dateTime
-                                  .toLocal()
-                                  .toString()
-                                  .split(" ")
-                                  .first),
-                              trailing: IconButton(
-                                icon: Icon(Icons.circle_outlined),
-                                onPressed: () {
-                                  setState(() {
-                                    doneTasks.add(tasks[index]);
-                                    tasks.removeAt(index);
-                                  });
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      'Completed Tasks:',
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      height: 200,
-                      child: ListView.builder(
-                        itemCount: doneTasks.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            color: Colors.white.withOpacity(0.5),
-                            child: ListTile(
-                              leading: Icon(Icons.done),
-                              title: Text(doneTasks[index].name,
-                                  style: TextStyle(fontSize: 18)),
-                            ),
-                          );
-                        },
-                      ),
+                    SizedBox(height: 20,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'TODOS:',
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Container(
+                          height: 200,
+                          child: ListView.builder(
+                            itemCount: allTasks.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                color: Colors.white.withOpacity(0.8),
+                                child: ListTile(
+                                  leading: IconButton(
+                                      icon: const Icon(Icons.circle_outlined),
+                                      onPressed: () {
+                                        setState(() {
+                                          doneTasks.add(allTasks[index]);
+                                          allTasks.remove(index);
+                                          removetask(
+                                              username, allTasks[index].name);
+                                        });
+                                      }),
+                                  title: Text(
+                                    allTasks[index].name,
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
+                                  subtitle: Text(allTasks[index]
+                                      .dateTime
+                                      .toString()
+                                      .split(" ")
+                                      .first),
+                                  trailing: IconButton(
+                                    icon: const Icon(
+                                        Icons.arrow_forward_ios_outlined),
+                                    onPressed: () {
+                                      setState(() {
+                                        //TODO
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Text(
+                          'Completed Tasks:',
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Container(
+                          height: 100,
+                          child: ListView.builder(
+                            itemCount: doneTasks.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                color: Colors.white.withOpacity(0.5),
+                                child: ListTile(
+                                  leading: Icon(Icons.done),
+                                  title: Text(doneTasks[index].name,
+                                      style: TextStyle(fontSize: 18)),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -228,15 +295,16 @@ class _SaraState extends State<sara> {
             ),
           ),
         ),
+
       ),
     );
   }
 
   Widget _buildSummaryBox(
-      {required String text, required Icon icon, double width = 120}) {
+      {required String text, required Icon icon, double width = 130}) {
     return Container(
       width: width,
-      height: 100, // Increased height to accommodate icon and text
+      height: 100,
       decoration: BoxDecoration(
         color: Colors.white60,
         borderRadius: BorderRadius.circular(20),
@@ -250,11 +318,10 @@ class _SaraState extends State<sara> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Modified here
           IconTheme(
             data: IconThemeData(
-              color: Colors.black, // Icon color
-              size: 50, // Icon size
+              color: Colors.black,
+              size: 50,
             ),
             child: icon,
           ),
@@ -271,16 +338,36 @@ class _SaraState extends State<sara> {
       ),
     );
   }
+
+  Future<List<String>> checker(String username) async {
+    List<String> detail = [];
+    await Socket.connect("172.25.144.1", 7777).then((serverSocket) {
+      serverSocket.write('SHOWDETAIL~$username\u0000');
+      serverSocket.flush();
+      serverSocket.listen((socketResponse) {
+        String result = String.fromCharCodes(socketResponse);
+        detail = result.split('~');
+        print("Server response: $detail");
+        setState(() {
+          _detail = detail;
+        });
+      });
+    });
+
+    return detail;
+  }
 }
 
 class Task {
-  String name;
-  DateTime dateTime;
+  String name = "";
+  String dateTime = "";
+  String description = "";
 
-  Task(this.name, this.dateTime);
+  Task(this.name, this.dateTime, this.description);
 }
+
 _launchURL(Uri url) async {
-    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
-      throw Exception('Could not launch $url');
-    }
+  if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+    throw Exception('Could not launch $url');
+  }
 }

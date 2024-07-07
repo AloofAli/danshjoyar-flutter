@@ -248,7 +248,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<String> signupChecker(String username ,String studentID ,String password) async {
     String userData = username + "~" + studentID + "~" + password;
     String canUserSignUp = '';
-    await Socket.connect("172.20.127.154", 7777).then((serverSocket) {
+    await Socket.connect("172.20.109.79", 7777).then((serverSocket) {
       serverSocket
           .write('SIGNUP~$userData\u0000');
       serverSocket.flush();
