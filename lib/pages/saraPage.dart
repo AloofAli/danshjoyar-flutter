@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:danshjoyar/pages/EditAccount.dart';
@@ -56,19 +57,33 @@ class _saraState extends State<sara> {
 
   Future<List<Task>> fetchTasks(String username) async {
     List<Task> tasks = [];
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
-      serverSocket.write('SHOWTASKS~$username\u0000');
-      serverSocket.flush();
-      serverSocket.listen((socketResponse) {
+    Socket socket;
+    try {
+      socket = await Socket.connect("172.28.0.1", 7777);
+      socket.write('SHOWTASKS~$username\u0000');
+      await socket.flush();
+
+      Completer<List<Task>> completer = Completer();
+      socket.listen((socketResponse) {
         String result = String.fromCharCodes(socketResponse);
-        List<String> spilitedBYline = result.split("\n");
-        for (int i = 0; i < spilitedBYline.length; i++) {
-          List<String> line = spilitedBYline.elementAt(i).split("~");
-          tasks.add(Task(line.first, line.elementAt(1), line.elementAt(2)));
+        List<String> splittedByLine = result.split("\n");
+        for (var line in splittedByLine) {
+          if (line.isNotEmpty) {
+            List<String> parts = line.split("~");
+            if (parts.length >= 3) {
+              tasks.add(Task(parts[0], parts[1], parts[2]));
+            }
+          }
         }
+        completer.complete(tasks);
+      }).onDone(() {
+        socket.destroy();
       });
-    });
-    return tasks;
+      return completer.future;
+    } catch (e) {
+      print("Failed to fetch tasks: $e");
+      return [];
+    }
   }
 
   final String username;
