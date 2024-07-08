@@ -1,27 +1,26 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-class kara extends StatefulWidget {
-  String username;
+class Kara extends StatefulWidget {
+  final String username;
 
-  kara(this.username, {super.key});
+  Kara(this.username, {Key? key}) : super(key: key);
 
   @override
-  State<kara> createState() => _karaState(username);
+  State<Kara> createState() => _KaraState();
 }
 
-class _karaState extends State<kara> {
+class _KaraState extends State<Kara> {
   List<Task> allTasks = [];
   List<Task> doneTasks = [];
-
-  String username;
-
-  _karaState(this.username);
+  late String username;
 
   @override
   void initState() {
     super.initState();
+    username = widget.username;
     _loadTasks(username);
   }
 
@@ -29,7 +28,6 @@ class _karaState extends State<kara> {
     List<Task> tasks = await fetchTasks(username);
     setState(() {
       allTasks = tasks;
-      print("tasks =$tasks");
     });
   }
 
@@ -38,19 +36,14 @@ class _karaState extends State<kara> {
     return Scaffold(
       body: SingleChildScrollView(
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height,
-          ),
+          constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
           child: IntrinsicHeight(
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(
-                    "lib/asset/images/casey-horner-4rDCa5hBlCs-unsplash.jpg",
-                  ),
+                  image: AssetImage("lib/asset/images/casey-horner-4rDCa5hBlCs-unsplash.jpg"),
                   fit: BoxFit.cover,
-                  colorFilter:
-                  ColorFilter.mode(Colors.black26, BlendMode.darken),
+                  colorFilter: ColorFilter.mode(Colors.black26, BlendMode.darken),
                 ),
               ),
               padding: EdgeInsets.fromLTRB(
@@ -79,30 +72,27 @@ class _karaState extends State<kara> {
                           color: Colors.white.withOpacity(0.8),
                           child: ListTile(
                             leading: IconButton(
-                                icon: const Icon(Icons.circle_outlined),
-                                onPressed: () {
-                                  setState(() {
-                                    doneTasks.add(allTasks[index]);
-                                    allTasks.remove(index);
-                                    removetask(username, allTasks[index].name);
-                                  });
-                                }),
+                              icon: const Icon(Icons.circle_outlined),
+                              onPressed: () {
+                                setState(() {
+                                  doneTasks.add(allTasks[index]);
+                                  allTasks.removeAt(index);
+                                  removeTask(username, doneTasks.last.name);
+                                });
+                              },
+                            ),
                             title: Text(
                               allTasks[index].name,
                               style: const TextStyle(fontSize: 18),
                             ),
-                            subtitle: Text(allTasks[index]
-                                .dateTime
-                                .toString()
-                                .split(" ")
-                                .first),
+                            subtitle: Text(allTasks[index].dateTime.split(" ").first),
                             trailing: IconButton(
-                              icon:
-                              const Icon(Icons.arrow_forward_ios_outlined),
+                              icon: const Icon(Icons.arrow_forward_ios_outlined),
                               onPressed: () {
-                                setState(() {
-                                  //TODO
-                                });
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => DescriptionDialog(text: allTasks[index].description),
+                                );
                               },
                             ),
                           ),
@@ -128,8 +118,7 @@ class _karaState extends State<kara> {
                           color: Colors.white.withOpacity(0.5),
                           child: ListTile(
                             leading: Icon(Icons.done),
-                            title: Text(doneTasks[index].name,
-                                style: TextStyle(fontSize: 18)),
+                            title: Text(doneTasks[index].name, style: TextStyle(fontSize: 18)),
                           ),
                         );
                       },
@@ -146,7 +135,7 @@ class _karaState extends State<kara> {
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
-            builder: (context) => TaskBottomSheet(username,_loadTasks),
+            builder: (context) => TaskBottomSheet(username, _loadTasks),
           );
         },
         child: const Icon(
@@ -160,39 +149,100 @@ class _karaState extends State<kara> {
 
   Future<List<Task>> fetchTasks(String username) async {
     List<Task> tasks = [];
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
-      serverSocket.write('SHOWTASKS~$username\u0000');
-      serverSocket.flush();
-      serverSocket.listen((socketResponse) {
+    Socket socket;
+    try {
+      socket = await Socket.connect("172.28.0.1", 7777);
+      socket.write('SHOWTASKS~$username\u0000');
+      await socket.flush();
+
+      Completer<List<Task>> completer = Completer();
+      socket.listen((socketResponse) {
         String result = String.fromCharCodes(socketResponse);
-        List<String> spilitedBYline = result.split("\n");
-        for (int i = 0; i < spilitedBYline.length; i++) {
-          List<String> line = spilitedBYline.elementAt(i).split("~");
-          tasks.add(Task(line.first, line.elementAt(1), line.elementAt(2)));
+        List<String> splittedByLine = result.split("\n");
+        for (var line in splittedByLine) {
+          if (line.isNotEmpty) {
+            List<String> parts = line.split("~");
+            if (parts.length >= 3) {
+              tasks.add(Task(parts[0], parts[1], parts[2]));
+            }
+          }
         }
+        completer.complete(tasks);
+      }).onDone(() {
+        socket.destroy();
       });
-    });
-    return tasks;
+      return completer.future;
+    } catch (e) {
+      print("Failed to fetch tasks: $e");
+      return [];
+    }
   }
 
-  Future<void> removetask(String username, String name) async {
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
-      serverSocket.write('DELETETASK~$username~$name\u0000');
-    });
-    setState(() {
-
+  Future<void> removeTask(String username, String name) async {
+    try {
+      final socket = await Socket.connect("172.28.0.1", 7777);
+      socket.write('DELETETASK~$username~$name\u0000');
+      await socket.flush();
+      await socket.close();
       _loadTasks(username);
-    });
+    } catch (e) {
+      print("Failed to remove task: $e");
+    }
+  }
+}
+
+class DescriptionDialog extends StatelessWidget {
+  final String text;
+
+  DescriptionDialog({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      backgroundColor: Colors.transparent,
+      child: contentBox(context),
+    );
   }
 
+  Widget contentBox(context) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            "Task Description:",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16),
+          Text(
+            text,
+            style: TextStyle(fontSize: 16),
+          ),
+          SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class TaskBottomSheet extends StatefulWidget {
-  String username;
+  final String username;
+  final Function refreshTasks;
 
-  Function function;
-
-  TaskBottomSheet(this.username, this.function,{super.key});
+  TaskBottomSheet(this.username, this.refreshTasks, {Key? key}) : super(key: key);
 
   @override
   _TaskBottomSheetState createState() => _TaskBottomSheetState();
@@ -231,10 +281,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
             controller: _subjectController,
             decoration: InputDecoration(
               labelText: "Enter your Task Subject",
-              labelStyle: TextStyle(
-                fontSize: 18,
-                color: Colors.grey[700],
-              ),
+              labelStyle: TextStyle(fontSize: 18, color: Colors.grey[700]),
               filled: true,
               fillColor: Colors.grey[200],
               enabledBorder: OutlineInputBorder(
@@ -252,10 +299,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
             controller: _descriptionController,
             decoration: InputDecoration(
               labelText: "Enter Task Description",
-              labelStyle: TextStyle(
-                fontSize: 18,
-                color: Colors.grey[700],
-              ),
+              labelStyle: TextStyle(fontSize: 18, color: Colors.grey[700]),
               filled: true,
               fillColor: Colors.grey[200],
               enabledBorder: OutlineInputBorder(
@@ -280,8 +324,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
               if (pickedDate != null) {
                 setState(() {
                   selectedDate = pickedDate;
-                  _dateController.text =
-                  "${pickedDate.toLocal()}".split(' ')[0];
+                  _dateController.text = "${pickedDate.toLocal()}".split(' ')[0];
                 });
               }
             },
@@ -290,10 +333,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                 controller: _dateController,
                 decoration: InputDecoration(
                   labelText: "Pick your Deadline date",
-                  labelStyle: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey[700],
-                  ),
+                  labelStyle: TextStyle(fontSize: 18, color: Colors.grey[700]),
                   filled: true,
                   fillColor: Colors.grey[200],
                   enabledBorder: OutlineInputBorder(
@@ -327,10 +367,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                 controller: _timeController,
                 decoration: InputDecoration(
                   labelText: "Pick your Deadline time",
-                  labelStyle: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey[700],
-                  ),
+                  labelStyle: TextStyle(fontSize: 18, color: Colors.grey[700]),
                   filled: true,
                   fillColor: Colors.grey[200],
                   enabledBorder: OutlineInputBorder(
@@ -353,7 +390,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                 "${_dateController.text} ${_timeController.text}",
                 _descriptionController.text,
               );
-              addtask(widget.username, task ,widget.function);
+              addTask(widget.username, task, widget.refreshTasks);
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
@@ -367,37 +404,29 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
               style: TextStyle(fontSize: 18),
             ),
           ),
-          const SizedBox(
-            height: 24,
-          )
+          const SizedBox(height: 24),
         ],
       ),
     );
   }
 
-  // ---------------------------------------------------------------------------
-
-  Future<void> addtask(String username, Task task, Function function) async {
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
-      serverSocket.write(
-          'ADDTASK~${username}~${task.name}~${task.dateTime}~${task.description}\u0000');
-      serverSocket.flush();
-      serverSocket.listen((socketResponse) {});
-    });
-    setState(() {
-
-      function(username);
-    });
+  Future<void> addTask(String username, Task task, Function refreshTasks) async {
+    try {
+      final socket = await Socket.connect("172.28.0.1", 7777);
+      socket.write('ADDTASK~$username~${task.name}~${task.dateTime}~${task.description}\u0000');
+      await socket.flush();
+      await socket.close();
+      refreshTasks(username);
+    } catch (e) {
+      print("Failed to add task: $e");
+    }
   }
-
 }
 
-// ---------------------------------------------------------------------------
-
 class Task {
-  String name="";
-  String dateTime="";
-  String description="";
+  String name;
+  String dateTime;
+  String description;
 
   Task(this.name, this.dateTime, this.description);
 }

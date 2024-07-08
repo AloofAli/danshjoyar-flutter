@@ -1,5 +1,5 @@
 import 'package:danshjoyar/pages/classaPage.dart';
-import 'package:danshjoyar/pages/karaPage.dart';
+import 'package:danshjoyar/pages/KaraPage.dart';
 import 'package:danshjoyar/pages/khabaraPage.dart';
 import 'package:danshjoyar/pages/saraPage.dart';
 import 'package:danshjoyar/pages/tamrina.dart';
@@ -33,7 +33,7 @@ class mainPageHandler extends StatelessWidget {
             ],
           ),
           body: TabBarView(
-            children: [sara(username: username, password: password), kara(username), classa(username: username,), khabara(), tamrina(username)],
+            children: [sara(username: username, password: password), Kara(username), classa(username: username,), khabara(), tamrina(username)],
           ),
         ),
       ),

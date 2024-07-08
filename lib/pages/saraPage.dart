@@ -249,15 +249,7 @@ class _saraState extends State<sara> {
                                       .toString()
                                       .split(" ")
                                       .first),
-                                  trailing: IconButton(
-                                    icon: const Icon(
-                                        Icons.arrow_forward_ios_outlined),
-                                    onPressed: () {
-                                      setState(() {
-                                        //TODO
-                                      });
-                                    },
-                                  ),
+
                                 ),
                               );
                             },
