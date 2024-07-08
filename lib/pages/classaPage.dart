@@ -342,6 +342,9 @@ class _AddClassBottomSheetState extends State<AddClassBottomSheet> {
       ),
     );
   }
+
+  // ---------------------------------------------------------------------------
+
   void checker2(String username, String teacher, String course ) async {
     await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket

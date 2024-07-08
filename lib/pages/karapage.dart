@@ -375,6 +375,8 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
     );
   }
 
+  // ---------------------------------------------------------------------------
+
   Future<void> addtask(String username, Task task, Function function) async {
     await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket.write(
@@ -389,6 +391,8 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
   }
 
 }
+
+// ---------------------------------------------------------------------------
 
 class Task {
   String name="";

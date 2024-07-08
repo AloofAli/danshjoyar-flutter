@@ -107,7 +107,10 @@ class _tamrinaState extends State<tamrina> {
       ),
     );
   }
-  Future<List<Assignment>> checker(String username ) async {
+
+   // ---------------------------------------------------------------------------
+
+   Future<List<Assignment>> checker(String username ) async {
     List<Assignment> Assignments=[];
     await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
       serverSocket
@@ -222,6 +225,8 @@ class _UploadAssignmentState extends State<UploadAssignment> {
     );
   }
 }
+
+// ---------------------------------------------------------------------------
 
 class Assignment {
   String name;

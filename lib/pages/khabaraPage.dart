@@ -113,6 +113,9 @@ class _khabaraState extends State<khabara> {
       ),
     );
   }
+
+  // ---------------------------------------------------------------------------
+
   _launchURL(Uri url) async {
     if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
       throw Exception('Could not launch $url');

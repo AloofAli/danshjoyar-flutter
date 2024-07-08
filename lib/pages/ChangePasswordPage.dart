@@ -141,6 +141,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     );
   }
 
+  // ---------------------------------------------------------------------------
+
   bool validatePassword(String password) {
     // Reset error message
     errorMessage = '';
@@ -172,6 +174,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     // If there are no error messages, the password is valid
     return errorMessage.isEmpty;
   }
+
+  // ---------------------------------------------------------------------------
 
   void error() {
     toastification.show(
@@ -206,6 +210,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     ToastificationStyle;
   }
 
+  // ---------------------------------------------------------------------------
+
   Future<String> currentPasswordChecker(String password) async {
     print(username);
     String currentPassword = username + "~" + password;
@@ -234,6 +240,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     });
     return isCurrentPasswordCorrect;
   }
+
+  // ---------------------------------------------------------------------------
 
   void changePassword(String password) async {
     print(username);

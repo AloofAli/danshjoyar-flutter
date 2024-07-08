@@ -339,6 +339,8 @@ class _saraState extends State<sara> {
     );
   }
 
+  // ---------------------------------------------------------------------------
+
   Future<List<String>> checker(String username) async {
     List<String> detail = [];
     await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
@@ -358,6 +360,8 @@ class _saraState extends State<sara> {
   }
 }
 
+// ---------------------------------------------------------------------------
+
 class Task {
   String name = "";
   String dateTime = "";
@@ -365,6 +369,8 @@ class Task {
 
   Task(this.name, this.dateTime, this.description);
 }
+
+// ---------------------------------------------------------------------------
 
 _launchURL(Uri url) async {
   if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {

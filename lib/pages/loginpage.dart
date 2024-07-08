@@ -130,6 +130,8 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  // ---------------------------------------------------------------------------
+
   Future<bool> loginChecker(String username, String password) async {
     String userData = username + "~" + password;
     Completer<bool> completer = Completer();
@@ -148,6 +150,8 @@ class _LoginPageState extends State<LoginPage> {
     });
     return completer.future;
   }
+
+  // ---------------------------------------------------------------------------
 
   void error() {
     toastification.show(

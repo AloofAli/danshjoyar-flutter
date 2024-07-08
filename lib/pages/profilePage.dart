@@ -263,6 +263,8 @@ class _profileScreenState extends State<profileScreen> {
     return ""; //this method doesn't need return type , the return type is just for handling compile error
   }
 
+  // ---------------------------------------------------------------------------
+
   void initDatas() async {
     String userData = username;
     await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
@@ -288,6 +290,7 @@ class _profileScreenState extends State<profileScreen> {
   }
 }
 
+// ---------------------------------------------------------------------------
 
 TableRow _buildTableRow(String label, String value) {
   return TableRow(

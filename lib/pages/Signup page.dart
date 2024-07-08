@@ -168,6 +168,8 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
+  // ---------------------------------------------------------------------------
+
   bool _validatePassword(String password) {
     _errorMessage = '';
 
@@ -191,6 +193,8 @@ class _SignUpPageState extends State<SignUpPage> {
     }
     return _errorMessage.isEmpty;
   }
+
+  // ---------------------------------------------------------------------------
 
   void error() {
     toastification.show(
@@ -225,6 +229,8 @@ class _SignUpPageState extends State<SignUpPage> {
     ToastificationStyle;
   }
 
+  // ---------------------------------------------------------------------------
+
   void error_username_signup() {
     toastification.show(
       context: context,
@@ -256,6 +262,8 @@ class _SignUpPageState extends State<SignUpPage> {
     );
     ToastificationStyle;
   }
+
+  // ---------------------------------------------------------------------------
 
   Future<bool> signupChecker(String username, String studentID, String password) async {
     String userData = username + "~" + studentID + "~" + password;
