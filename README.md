@@ -327,7 +327,7 @@ The `LoginPage` code imports necessary libraries and dependencies for Flutter UI
 ---
 
 ### 10. To-Do List Page (`kara`)
-![screenshot](ScreenShots/Signup.png)
+![screenshot](ScreenShots/kara.png)
 
 #### `kara` Class
 
