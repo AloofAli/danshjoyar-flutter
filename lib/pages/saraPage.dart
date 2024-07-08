@@ -304,7 +304,7 @@ class _saraState extends State<sara> {
       {required String text, required Icon icon, double width = 130}) {
     return Container(
       width: width,
-      height: 100,
+      height: 110,
       decoration: BoxDecoration(
         color: Colors.white60,
         borderRadius: BorderRadius.circular(20),
@@ -330,7 +330,7 @@ class _saraState extends State<sara> {
             text,
             style: TextStyle(
               color: Colors.black,
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
             ),
           ),
