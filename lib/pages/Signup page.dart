@@ -268,7 +268,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<bool> signupChecker(String username, String studentID, String password) async {
     String userData = username + "~" + studentID + "~" + password;
     Completer<bool> completer = Completer();
-    Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+    Socket.connect("192.168.245.1", 7777).then((serverSocket) {
       serverSocket.write('SIGNUP~$userData\u0000');
       serverSocket.flush();
       serverSocket.listen((socketResponse) {

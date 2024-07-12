@@ -112,7 +112,7 @@ class _tamrinaState extends State<tamrina> {
 
    Future<List<Assignment>> checker(String username ) async {
     List<Assignment> Assignments=[];
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+    await Socket.connect("192.168.245.1", 7777).then((serverSocket) {
       serverSocket
           .write('ASSIGNMENTS~$username\u0000');
       serverSocket.flush();

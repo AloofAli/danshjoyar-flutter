@@ -37,7 +37,7 @@ class _saraState extends State<sara> {
   }
 
   Future<void> removetask(String username, String name) async {
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+    await Socket.connect("192.168.245.1", 7777).then((serverSocket) {
       serverSocket.write('DELETETASK~$username~$name\u0000');
     });
     setState(() {
@@ -59,10 +59,9 @@ class _saraState extends State<sara> {
     List<Task> tasks = [];
     Socket socket;
     try {
-      socket = await Socket.connect("172.28.0.1", 7777);
+      socket = await Socket.connect("192.168.245.1", 7777);
       socket.write('SHOWTASKS~$username\u0000');
       await socket.flush();
-
       Completer<List<Task>> completer = Completer();
       socket.listen((socketResponse) {
         String result = String.fromCharCodes(socketResponse);
@@ -350,7 +349,7 @@ class _saraState extends State<sara> {
 
   Future<List<String>> checker(String username) async {
     List<String> detail = [];
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+    await Socket.connect("192.168.245.1", 7777).then((serverSocket) {
       serverSocket.write('SHOWDETAIL~$username\u0000');
       serverSocket.flush();
       serverSocket.listen((socketResponse) {

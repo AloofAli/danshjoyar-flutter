@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> loginChecker(String username, String password) async {
     String userData = username + "~" + password;
     Completer<bool> completer = Completer();
-    Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+    Socket.connect("192.168.245.1", 7777).then((serverSocket) {
       serverSocket.write('LOGIN~$userData\u0000');
       serverSocket.flush();
       serverSocket.listen((socketResponse) {

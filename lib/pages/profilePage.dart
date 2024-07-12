@@ -256,7 +256,7 @@ class _profileScreenState extends State<profileScreen> {
 
   Future<String> deleteAccount() async {
     String un = username;
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+    await Socket.connect("192.168.245.1", 7777).then((serverSocket) {
       serverSocket.write('DELETEACCOUNT~$un\u0000');
       serverSocket.flush();
     });
@@ -267,7 +267,7 @@ class _profileScreenState extends State<profileScreen> {
 
   void initDatas() async {
     String userData = username;
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+    await Socket.connect("192.168.245.1", 7777).then((serverSocket) {
       serverSocket.write('PROFILE~$userData\u0000');
       serverSocket.flush();
       serverSocket.listen((socketResponse) {

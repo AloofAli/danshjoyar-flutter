@@ -144,34 +144,26 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   // ---------------------------------------------------------------------------
 
   bool validatePassword(String password) {
-    // Reset error message
     errorMessage = '';
 
-    // Password length greater than 6
     if (password.length < 8) {
       errorMessage += 'Password must be longer than 8 characters.\n';
     }
-    // Contains at least one uppercase letter
     if (!password.contains(RegExp(r'[A-Z]'))) {
       errorMessage += '• Uppercase letter is missing.\n';
     }
-
-    // Contains at least one lowercase letter
     if (!password.contains(RegExp(r'[a-z]'))) {
       errorMessage += '• Lowercase letter is missing.\n';
     }
-
-    // Contains at least one digit
     if (!password.contains(RegExp(r'[0-9]'))) {
       errorMessage += '• Digit is missing.\n';
     }
-
-    // Contains at least one special character
     if (!password.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
       errorMessage += '• Special character is missing.\n';
     }
-    error();
-    // If there are no error messages, the password is valid
+    if (errorMessage.isNotEmpty) {
+      error();
+    }
     return errorMessage.isEmpty;
   }
 
@@ -216,7 +208,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     print(username);
     String currentPassword = username + "~" + password;
     String isCurrentPasswordCorrect = '';
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+    await Socket.connect("192.168.245.1", 7777).then((serverSocket) {
       serverSocket
           .write('CURRENTPASSWORD~$currentPassword\u0000');
       serverSocket.flush();
@@ -230,7 +222,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             setState(() {
               currentPasswordIsCorrect = true;
             });
-          } else if (isCurrentPasswordCorrect == "true") {
+          } else if (isCurrentPasswordCorrect != "true") {
               setState(() {
                 currentPasswordIsCorrect = false;
               });
@@ -246,7 +238,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   void changePassword(String password) async {
     print(username);
     String newPassword = username + "~" + password;
-    await Socket.connect("172.28.0.1", 7777).then((serverSocket) {
+    await Socket.connect("192.168.245.1", 7777).then((serverSocket) {
       serverSocket.write('CHANGEPASSWORD~$newPassword\u0000');
       serverSocket.flush();
     });
