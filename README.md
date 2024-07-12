@@ -293,8 +293,6 @@ The `LoginPage` code imports necessary libraries and dependencies for Flutter UI
 - Displays `newsArticles` using `ListView.builder` and `Card` widgets.
 - Implements `RefreshIndicator` for updating news feed.
 
-**Networking (`khabara` Method)**
-- Retrieves `newsArticles` from server (`NEWS~$userData\u0000`).
 
 **Usage**
 - Centralizes news and announcements within university app.
@@ -327,7 +325,7 @@ The `LoginPage` code imports necessary libraries and dependencies for Flutter UI
 ---
 
 ### 10. To-Do List Page (`kara`)
-![screenshot](ScreenShots/Signup.png)
+![screenshot](ScreenShots/kara.png)
 
 #### `kara` Class
 
